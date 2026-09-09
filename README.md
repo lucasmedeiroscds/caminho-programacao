@@ -1,7 +1,7 @@
 # Caminho da Programação
 
 Portal de aprendizado gerado a partir do guia `CAMINHO_DA_PROGRAMACAO.md` — do zero ao
-avançado, passando por Lógica, HTML, CSS, JavaScript, Python, C e C++.
+avançado, passando por Lógica, HTML, CSS, JavaScript, Python, Java, C e C++.
 
 **No ar:** https://lucasmedeiroscds.github.io/caminho-programacao/
 
@@ -9,11 +9,14 @@ avançado, passando por Lógica, HTML, CSS, JavaScript, Python, C e C++.
 
 | | |
 |---|---|
-| 8 módulos, 84 aulas | Lógica → HTML → CSS → JS → Python → C → C++ → Fundamentos |
+| 9 módulos, 97 aulas | Lógica → HTML → CSS → JS → Python → Java → C → C++ → Fundamentos |
 | 12 exercícios | os do Módulo 0, para fazer no papel antes do editor |
-| 14 projetos | com requisitos e critério de aprovação destacados |
-| 48 itens de checklist | os portões de saída de cada módulo |
-| 40 questões | 5 por módulo, sobre as armadilhas que o próprio material sinaliza |
+| 17 projetos | com requisitos e critério de aprovação destacados |
+| 56 itens de checklist | os portões de saída de cada módulo |
+| 45 questões | 5 por módulo, sobre as armadilhas que o próprio material sinaliza |
+
+A cor na borda de cada módulo indica a distância da máquina: azul para o que roda
+longe dela (Lógica a Java), quente para o que encosta nela (C e C++).
 
 Além disso: busca por `Ctrl + K`, tema claro/escuro, barra de progresso de leitura,
 índice lateral por aula e certificado imprimível ao fechar todos os módulos.
