@@ -2259,7 +2259,7 @@ public class OlaMundo {
 }
 ```
 
-Sete palavras para imprimir uma linha. Vamos por partes, porque cada uma tem motivo:
+Cinco linhas e sete palavras reservadas para imprimir um texto. Em Python seria uma linha. Vamos por partes, porque cada peça tem motivo:
 
 - `public class OlaMundo` — **tudo em Java vive dentro de uma classe.** Não existe código solto como em Python. O arquivo tem que se chamar `OlaMundo.java`, com o mesmo nome da classe pública. Essa regra é do compilador, não é estilo.
 - `public static void main(String[] args)` — o ponto de entrada. A JVM procura exatamente essa assinatura para saber por onde começar. `static` significa que roda sem precisar criar um objeto; `String[] args` recebe o que você digitou na linha de comando.
@@ -2272,15 +2272,17 @@ javac OlaMundo.java     # compila → gera OlaMundo.class (bytecode)
 java OlaMundo           # executa o bytecode na JVM
 ```
 
-Repare que são **duas etapas**, como no C. Mas o `javac` não gera código de máquina: gera *bytecode*, uma linguagem intermediária que a **JVM** (Java Virtual Machine) executa. É daí que vem o slogan antigo *"escreva uma vez, rode em qualquer lugar"* — o mesmo `.class` roda no Windows, no Linux e no celular Android, porque cada sistema tem sua própria JVM.
+Repare que são **duas etapas**, como no C. Mas o `javac` não gera código de máquina: gera *bytecode*, uma linguagem intermediária que a **JVM** (Java Virtual Machine) executa. É daí que vem o slogan antigo *"escreva uma vez, rode em qualquer lugar"* — o mesmo `.class` roda no Windows, no Linux e no Mac sem recompilar, porque cada sistema tem sua própria JVM.
+
+*(Android é a exceção que confunde todo mundo: apesar de você escrever Java, o `.class` não roda lá. Ele passa por uma conversão a mais, para um formato chamado DEX, executado pelo ART — o runtime do Android, que não é uma JVM.)*
 
 | Sigla | O que é |
 |-------|---------|
-| **JDK** | O kit do desenvolvedor: compilador + ferramentas + JRE. É o que você instala |
-| **JRE** | Só o necessário para *executar* Java |
+| **JDK** | O kit do desenvolvedor: compilador + ferramentas + tudo que executa. É o que você instala |
+| **JRE** | Só o necessário para *executar* Java, sem compilador |
 | **JVM** | A máquina virtual que roda o bytecode |
 
-Você instala o JDK. Os outros dois vêm dentro.
+Você instala o JDK e tem os três. O JRE separado existia até o Java 8 — hoje ninguém baixa mais isso, mas o nome ainda aparece em documentação antiga e em pergunta de prova.
 
 ### Aula 5.2 — Tipos: primitivo contra objeto
 
@@ -2497,10 +2499,12 @@ conta.saldo;             // ERRO de compilação — é private
 |-------|---------|------------------|
 | **Encapsulamento** | Esconder o estado interno atrás de métodos | `saldo` é `private`, só muda por `depositar`/`sacar` |
 | **Herança** | Uma classe aproveitar outra | `ContaPoupanca extends ContaBancaria` |
-| **Polimorfismo** | O mesmo método se comportar diferente | `sacar` cobrando taxa na conta corrente |
+| **Polimorfismo** | O mesmo método se comportar diferente | `sacar` exigindo saldo mínimo na poupança (Aula 5.7) |
 | **Abstração** | Expor o que faz, esconder como faz | Quem usa não sabe se o saldo é `double` ou `BigDecimal` |
 
 **Regra do encapsulamento:** atributo é `private` por padrão. Só abra o que precisa, e abra por método — assim você pode validar, como o `depositar` faz ao recusar valor negativo.
+
+**Cuidado ao copiar este exemplo:** o `saldo` aqui é `double` para o código caber na tela, mas na Aula 5.2 eu disse para nunca usar `double` com dinheiro — e continua valendo. Conta de verdade usa `BigDecimal`, que é mais verboso (`saldo.add(valor)` em vez de `saldo += valor`) e por isso atrapalharia a explicação de encapsulamento. Guarde a diferença: aqui o assunto é orientação a objetos, não precisão decimal.
 
 ### Aula 5.7 — Herança, interfaces e polimorfismo
 
@@ -2565,10 +2569,17 @@ O laço não sabe nem se importa com qual tipo concreto está tratando. Adiciona
 
 ```java
 public abstract class Funcionario {
+
+    private final String matricula;
+
+    protected Funcionario(String matricula) {
+        this.matricula = matricula;
+    }
+
     public abstract double calcularSalario();   // filho é obrigado a escrever
 
     public String cracha() {                    // já vem pronto
-        return "FUNC-" + hashCode();
+        return "FUNC-" + matricula;
     }
 }
 ```
@@ -2635,21 +2646,24 @@ Sem isso, o `HashSet` usa a identidade do objeto e sua deduplicação simplesmen
 ### Aula 5.9 — Exceções
 
 ```java
+int divisor = 0;
+
 try {
-    int resultado = 10 / divisor;
-    String texto = null;
-    texto.length();                     // NullPointerException
+    int resultado = 10 / divisor;       // lança ArithmeticException
+    System.out.println(resultado);      // nunca chega aqui
 
 } catch (ArithmeticException e) {
     System.out.println("Divisão por zero");
 
-} catch (NullPointerException e) {
+} catch (NullPointerException e) {      // outro tipo, outro tratamento
     System.out.println("Objeto nulo: " + e.getMessage());
 
 } finally {
     System.out.println("Sempre executa");
 }
 ```
+
+Você pode empilhar quantos `catch` quiser — o primeiro cujo tipo bater é o que roda, e os outros são ignorados. Como aqui a divisão estoura logo na primeira linha, o resto do `try` nem é executado: exceção interrompe o bloco na hora.
 
 Java divide exceções em duas famílias, e essa divisão não existe em Python nem em JavaScript:
 
@@ -2689,7 +2703,7 @@ nomes.add(42);            // ERRO de compilação — e ainda bem
 String primeiro = nomes.get(0);      // sem cast, o compilador já sabe
 ```
 
-Antes dos generics (Java 4), tudo era `Object` e você fazia cast na mão — e descobria o erro só ao rodar. O generic move esse erro para a compilação, que é onde erro é barato.
+Generics chegaram no **Java 5**. Antes deles tudo era `Object` e você fazia cast na mão — e descobria o erro só ao rodar. O generic move esse erro para a compilação, que é onde erro é barato.
 
 Escrevendo o seu:
 
@@ -2735,9 +2749,9 @@ nomes.sort(Comparator.naturalOrder());
 
 ```java
 List<Produto> produtos = List.of(
-    new Produto("Camisa", 50, 3),
-    new Produto("Calça", 120, 0),
-    new Produto("Boné", 30, 7)
+    new Produto("Camisa", "Roupa", 50, 3),
+    new Produto("Calça", "Roupa", 120, 0),
+    new Produto("Boné", "Acessório", 30, 7)
 );
 
 double total = produtos.stream()
@@ -2745,6 +2759,8 @@ double total = produtos.stream()
     .mapToDouble(p -> p.preco() * p.estoque())
     .sum();
 ```
+
+*(`Produto` aqui é um **record**, e por isso os acessos são `p.preco()` e não `p.getPreco()`. A Aula 5.12 mostra o que é — por ora, leia como uma classe de dados.)*
 
 Lê-se de cima para baixo, exatamente como o encadeamento que você escreveu em JavaScript no Módulo 3. As linguagens conversam mais do que parece.
 
@@ -2779,21 +2795,25 @@ s.toList();                          // IllegalStateException — já foi consum
 
 Nada acontece até chegar uma operação terminal (`toList`, `sum`, `forEach`, `collect`). E depois que ela roda, aquele stream morreu — crie outro a partir da coleção.
 
+*(O `.toList()` direto no stream existe a partir do Java 16. Em código mais antigo você vai ver `.collect(Collectors.toList())`, que faz o mesmo.)*
+
 ### Aula 5.12 — Records e Optional
 
 **Record** (Java 16+) — uma classe que só carrega dados, em uma linha:
 
 ```java
-public record Produto(String nome, double preco, int estoque) { }
+public record Produto(String nome, String categoria, double preco, int estoque) { }
 ```
 
-Isso já te dá construtor, getters (`p.nome()`), `equals()`, `hashCode()` e `toString()` prontos e corretos. As trinta linhas de ceremônia que davam fama ruim ao Java sumiram.
+Isso já te dá construtor, acessos (`p.nome()`), `equals()`, `hashCode()` e `toString()` prontos e corretos. As trinta linhas de cerimônia que davam fama ruim ao Java sumiram.
 
 ```java
-Produto p = new Produto("Camisa", 50, 3);
+Produto p = new Produto("Camisa", "Roupa", 50, 3);
 p.nome();                 // "Camisa"
 p.equals(outro);          // compara por conteúdo, de graça
 ```
+
+Repare que o acesso é `p.nome()`, sem o `get` na frente — record não segue a convenção de *getter* das classes comuns.
 
 Use record para tudo que for dado imutável — resposta de API, linha de banco, valor de configuração.
 
@@ -2830,7 +2850,7 @@ mvn clean install     # baixa dependências, compila, roda testes, empacota
 mvn test              # só os testes
 ```
 
-**Teste com JUnit** — e aqui o Java é referência, o ferramental é o melhor que existe:
+**Teste com JUnit** — e aqui o Java é referência, o ferramental é dos melhores que existem:
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -2842,7 +2862,7 @@ class ContaBancariaTest {
     void deveDepositarValorPositivo() {
         ContaBancaria conta = new ContaBancaria("Ana", 100);
         conta.depositar(50);
-        assertEquals(150, conta.getSaldo());
+        assertEquals(150.0, conta.getSaldo(), 0.001);   // o 3º argumento é a tolerância
     }
 
     @Test
@@ -2861,7 +2881,7 @@ class ContaBancariaTest {
 | Android | Kotlin, Jetpack Compose | Aplicativo de celular |
 | Big Data | Spark, Kafka | Dados em escala |
 
-Se o objetivo é emprego, **Spring Boot** é a resposta. É o framework dominante no mercado corporativo brasileiro, e é ele que aparece em 8 de cada 10 vagas de Java. Mas não pule para o Spring sem os projetos abaixo — framework em cima de base fraca produz gente que sabe anotar `@Service` e não sabe explicar o que acontece por baixo.
+Se o objetivo é emprego, **Spring Boot** é a resposta. É o framework dominante no mercado corporativo brasileiro — abra qualquer site de vagas, filtre por Java e conte quantos anúncios não pedem Spring; vão sobrar poucos. Mas não pule para o Spring sem os projetos abaixo — framework em cima de base fraca produz gente que sabe anotar `@Service` e não sabe explicar o que acontece por baixo.
 
 ---
 
