@@ -1685,7 +1685,24 @@ promessa
     .finally(() => console.log("Acabou, deu certo ou não"));
 ```
 
-**async/await** — a mesma coisa, escrita de forma legível:
+**async/await** — a mesma promessa, consumida de forma legível.
+
+Repare que os dois blocos abaixo usam a `promessa` criada acima e imprimem o mesmo `"Sucesso!"`:
+
+```javascript
+// Com .then
+promessa.then(resultado => console.log(resultado));
+
+// Com async/await — mesma promessa, mesmo resultado
+async function usar() {
+    const resultado = await promessa;
+    console.log(resultado);
+}
+```
+
+O `await` desembrulha a promessa e devolve o valor de dentro dela. Some o `.then`, some o aninhamento, e o código volta a ser lido de cima para baixo.
+
+Agora o mesmo recurso em algo real — buscar dados de um servidor:
 
 ```javascript
 async function buscarUsuario(id) {
@@ -2251,7 +2268,7 @@ Com FastAPI ou Flask: endpoints de CRUD, banco SQLite, documentação automátic
 
 Java parece Python com burocracia. Nas primeiras semanas você vai reclamar de escrever cinco linhas para fazer o que o Python fazia em uma. Depois de um mês, quando um programa seu passar de dois mil linhas, você vai entender para que serve a burocracia: o compilador pega hoje o erro que o Python só te mostraria em produção, na terça-feira, às três da manhã.
 
-Esta é a terceira linguagem de sintaxe parecida que você vê — JavaScript, C e Java compartilham as chaves, o ponto e vírgula e o `for`. A novidade aqui não é a sintaxe, é a **disciplina**: tudo tem tipo declarado, tudo vive dentro de uma classe, e o compilador não deixa passar.
+Esta é a segunda linguagem de chaves e ponto e vírgula que você vê: JavaScript foi a primeira, e o `for`, o `if` e o `while` do Java são quase iguais aos de lá. C e C++, nos próximos módulos, seguem a mesma família. A novidade aqui não é a sintaxe, é a **disciplina**: tudo tem tipo declarado, tudo vive dentro de uma classe, e o compilador não deixa passar.
 
 **Sobre Java vir depois do Python e antes do C:** Java é o degrau intermediário perfeito. Ele te obriga a declarar tipo (como C vai obrigar) mas continua limpando a memória por você (como Python faz). Quando você chegar no C, metade do choque já terá passado.
 
@@ -2284,7 +2301,7 @@ javac OlaMundo.java     # compila → gera OlaMundo.class (bytecode)
 java OlaMundo           # executa o bytecode na JVM
 ```
 
-Repare que são **duas etapas**, como no C. Mas o `javac` não gera código de máquina: gera *bytecode*, uma linguagem intermediária que a **JVM** (Java Virtual Machine) executa. É daí que vem o slogan antigo *"escreva uma vez, rode em qualquer lugar"* — o mesmo `.class` roda no Windows, no Linux e no Mac sem recompilar, porque cada sistema tem sua própria JVM.
+Repare que são **duas etapas** — diferente de Python e JavaScript, onde você manda rodar o arquivo e pronto. Mas o `javac` não gera código de máquina: gera *bytecode*, uma linguagem intermediária que a **JVM** (Java Virtual Machine) executa. É daí que vem o slogan antigo *"escreva uma vez, rode em qualquer lugar"* — o mesmo `.class` roda no Windows, no Linux e no Mac sem recompilar, porque cada sistema tem sua própria JVM.
 
 *(Android é a exceção que confunde todo mundo: apesar de você escrever Java, o `.class` não roda lá. Ele passa por uma conversão a mais, para um formato chamado DEX, executado pelo ART — o runtime do Android, que não é uma JVM.)*
 
@@ -2404,7 +2421,7 @@ String resultado = sb.toString();
 
 ### Aula 5.4 — Controle de fluxo
 
-Igual ao que você já viu em C e JavaScript, com duas adições modernas:
+Igual ao que você já viu em JavaScript, com duas adições modernas:
 
 ```java
 if (idade >= 18) { } else if (idade >= 16) { } else { }
@@ -2420,7 +2437,24 @@ while (condicao) { }
 do { } while (condicao);
 ```
 
-**Switch moderno** (Java 14+) — sem `break`, sem cair no caso seguinte:
+**Switch.** A forma antiga, que você ainda vai encontrar em código existente:
+
+```java
+String tipo;
+switch (dia) {
+    case "sábado":
+    case "domingo":
+        tipo = "Fim de semana";
+        break;              // sem este break, a execução escorre para o próximo caso
+    case "sexta":
+        tipo = "Quase lá";
+        break;
+    default:
+        tipo = "Dia útil";
+}
+```
+
+A forma moderna (Java 14+) faz o mesmo em menos linhas:
 
 ```java
 String tipo = switch (dia) {
@@ -2430,7 +2464,7 @@ String tipo = switch (dia) {
 };
 ```
 
-Compare com o switch antigo, onde esquecer o `break` fazia a execução escorrer para o próximo caso — bug clássico que a seta `->` eliminou de vez.
+Ponha as duas lado a lado e veja o que sumiu: **os `break`**. Na forma antiga, esquecer um faz a execução continuar no caso seguinte e atribuir o valor errado — bug clássico, que ninguém percebe porque o código compila normalmente. A seta `->` não escorre, então o erro deixou de existir. De quebra, o switch moderno **devolve um valor**, o que permite atribuí-lo direto a uma variável em vez de declarar antes e preencher dentro.
 
 ### Aula 5.5 — Arrays e a classe Arrays
 
@@ -3130,7 +3164,22 @@ int main() {
 }
 ```
 
-Este é o conceito de **passagem por valor vs. passagem por referência**. Quando você entender isso, você vai entender de uma vez por que em JavaScript modificar um objeto dentro de uma função afeta o original mas modificar um número não afeta. É a mesma coisa, escondida.
+Este é o conceito de **passagem por valor vs. passagem por referência**, e ele explica um comportamento do JavaScript que provavelmente já te confundiu:
+
+```javascript
+function mudarNumero(n) { n = 99; }
+function mudarObjeto(o) { o.valor = 99; }
+
+let numero = 1;
+mudarNumero(numero);
+console.log(numero);          // 1   — não mudou
+
+let objeto = { valor: 1 };
+mudarObjeto(objeto);
+console.log(objeto.valor);    // 99  — mudou
+```
+
+JavaScript nunca te contou por quê. C conta: o número foi copiado para dentro da função, como em `tentarDobrar`; o objeto teve o **endereço** copiado, como em `dobrar`. Nos dois casos a função recebeu uma cópia — a diferença é o que estava sendo copiado. É a mesma mecânica de ponteiro, só que escondida.
 
 **Ponteiros e vetores** são quase a mesma coisa em C:
 
