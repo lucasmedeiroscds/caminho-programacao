@@ -316,7 +316,19 @@ PARA i DE 1 ATÉ 5 FAÇA
 FIM PARA
 ```
 
-Mesma coisa que o exemplo acima, escrito de forma compacta. As três partes estão todas na primeira linha.
+Saída: 1, 2, 3, 4, 5 — exatamente a mesma do ENQUANTO acima.
+
+As três partes continuam existindo, espremidas na primeira linha:
+
+| Parte | No ENQUANTO | No PARA |
+|-------|-------------|---------|
+| Inicialização | `contador = 1` | `DE 1` |
+| Condição de parada | `contador <= 5` | `ATÉ 5` |
+| Atualização | `contador = contador + 1` | não aparece — o PARA soma 1 sozinho |
+
+**Não procure a atualização: ela é automática.** E é exatamente aí que está a vantagem — como o PARA incrementa por conta própria, ele **não tem como virar loop infinito**. O erro que o ENQUANTO deixa você cometer, o PARA não deixa.
+
+O preço é a rigidez: o PARA anda de 1 em 1, do início ao fim, e pronto. Quando o passo depende de algo que muda durante a execução, só o ENQUANTO resolve.
 
 **Quando usar cada um:**
 
