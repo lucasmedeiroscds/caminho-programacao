@@ -1,4 +1,26 @@
 <title>Caminho da Programação</title>
+<meta name="description" content="Portal de aprendizado do zero ao avançado: 84 aulas de Lógica, HTML, CSS, JavaScript, Python, C e C++, com exercícios, projetos e checklist de saída em cada módulo.">
+<meta name="author" content="lucasmedeiroscds">
+<meta name="theme-color" content="#f3f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f141a" media="(prefers-color-scheme: dark)">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Caminho da Programação">
+<meta property="og:url" content="https://lucasmedeiroscds.github.io/caminho-programacao/">
+<meta property="og:title" content="Caminho da Programação — do zero ao avançado">
+<meta property="og:description" content="84 aulas de Lógica, HTML, CSS, JavaScript, Python, C e C++. Com exercícios, projetos e um checklist para saber quando avançar.">
+<meta property="og:image" content="https://lucasmedeiroscds.github.io/caminho-programacao/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Os oito módulos do caminho, de Lógica a C++, com a dificuldade de cada um.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Caminho da Programação — do zero ao avançado">
+<meta name="twitter:description" content="84 aulas de Lógica, HTML, CSS, JavaScript, Python, C e C++. Com exercícios, projetos e um checklist para saber quando avançar.">
+<meta name="twitter:image" content="https://lucasmedeiroscds.github.io/caminho-programacao/og.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;650&family=JetBrains+Mono:wght@400;500;700&display=swap">
@@ -148,6 +170,16 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/*
+ * O atributo `hidden` precisa vencer o `display` das classes deste arquivo.
+ *
+ * A regra `[hidden]{display:none}` do navegador é folha de usuário-agente, e
+ * qualquer declaração de autor a atropela — inclusive `.busca-fundo{display:grid}`.
+ * Sem esta linha a busca nasce visível: uma camada `position:fixed` cobrindo a
+ * tela inteira, que come todo clique da página.
+ */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   background: var(--fundo);
@@ -245,8 +277,9 @@ button { font: inherit; color: inherit; }
   font-size: 15px;
   letter-spacing: -0.04em;
 }
-.marca-nome { font-family: Archivo, sans-serif; font-weight: 700; font-size: 14.5px; line-height: 1.15; letter-spacing: -0.02em; }
-.marca-sub { font-size: 11px; color: var(--tinta-3); line-height: 1.2; margin-top: 1px; }
+/* Ambos são `span` dentro de `span`: sem `block` a legenda cola no nome. */
+.marca-nome { display: block; font-family: Archivo, sans-serif; font-weight: 700; font-size: 14.5px; line-height: 1.15; letter-spacing: -0.02em; }
+.marca-sub { display: block; font-size: 11px; color: var(--tinta-3); line-height: 1.2; margin-top: 1px; }
 
 .nav { display: flex; flex-direction: column; gap: 1px; }
 .nav a {
@@ -693,7 +726,7 @@ button { font: inherit; color: inherit; }
 .fases { display: grid; gap: 2px; }
 .fase {
   display: grid;
-  grid-template-columns: 96px 1fr auto;
+  grid-template-columns: 118px 1fr auto;
   align-items: center;
   gap: 14px;
   padding: 11px 14px;
@@ -711,6 +744,7 @@ button { font: inherit; color: inherit; }
 .fase-p .barra { width: 76px; }
 .fase-p .n { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--tinta-3); font-variant-numeric: tabular-nums; min-width: 30px; text-align: right; }
 .fase.alvo { border-color: color-mix(in srgb, var(--ocre) 50%, transparent); background: linear-gradient(90deg, var(--ocre-fraco), transparent 65%); }
+.fase-marca svg { width: 12px; height: 12px; flex: none; }
 .fase-marca {
   display: inline-flex; align-items: center; gap: 5px;
   font-family: 'JetBrains Mono', monospace;
@@ -1206,7 +1240,8 @@ const ICONES = {
   busca: '<circle cx="9" cy="9" r="5.2"/><path d="m13 13 4 4"/>',
   seta: '<path d="M4 10h12M11 5l5 5-5 5"/>',
   tique: '<path d="M3.5 8.5 7 12l6.5-7"/>',
-  fogo: '<path d="M10 2s1 3-1 5-3 2-3 5a4 4 0 0 0 8 0c0-2-1-3-1-3s-1 1.5-2 1.5S10 8 10 2z"/>',
+  // Bandeirinha de marco: lê melhor que a chama, que virava um borrão a 12px.
+  fogo: '<path d="M5.5 18V3M5.5 4h9l-2.2 3.2L14.5 11h-9"/>',
 };
 
 const ico = (nome, cls = '') =>
