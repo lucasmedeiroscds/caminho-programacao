@@ -1,0 +1,184 @@
+{
+  "0": {
+    "titulo": "Ordenar um vetor sem função pronta",
+    "min": 90,
+    "enunciado": "Escreva, em pseudocódigo e depois no Portugol, um algoritmo que ordene 10 nomes em ordem alfabética — <strong>sem usar nenhuma função de ordenação pronta</strong>. Você precisa inventar o algoritmo. Depois, faça o teste de mesa com 4 nomes e prove no papel que ele funciona.",
+    "criterios": [
+      "O algoritmo termina — não tem laço infinito em nenhuma entrada",
+      "Funciona com a lista já ordenada, e com ela ao contrário",
+      "Fiz o teste de mesa completo, no papel, com 4 nomes",
+      "Sei dizer quantas comparações ele faz no pior caso",
+      "Consigo explicar em voz alta por que ele sempre termina"
+    ]
+  },
+  "1": {
+    "titulo": "Página navegável só com teclado",
+    "min": 60,
+    "enunciado": "Monte uma página de cadastro com formulário completo — nome, email, senha, estado, mensagem e envio — usando só HTML semântico. Depois <strong>navegue nela inteira usando apenas Tab, Shift+Tab e Enter</strong>, sem tocar no mouse.",
+    "criterios": [
+      "Todo campo tem <code>label</code> com <code>for</code> apontando para o <code>id</code>",
+      "A ordem do Tab segue a ordem visual da página",
+      "Consigo enviar o formulário sem mouse",
+      "O foco é visível em todos os elementos alcançáveis",
+      "Não usei nenhuma <code>div</code>",
+      "Os <code>type</code> estão corretos: email, password, tel onde couber"
+    ]
+  },
+  "2": {
+    "titulo": "Layout de 320px a 1920px",
+    "min": 120,
+    "enunciado": "Construa uma landing page responsiva com cabeçalho fixo, hero, grade de cards em Grid, depoimentos em Flex e rodapé em colunas. Depois abra o DevTools no modo responsivo e <strong>passe por iPhone SE (375px), iPad (768px) e desktop (1440px)</strong>.",
+    "criterios": [
+      "Nenhuma barra de rolagem horizontal em nenhuma largura",
+      "Nenhum texto ilegível ou elemento estourando o container",
+      "Escrevi mobile first: o CSS base é o do celular",
+      "Todas as cores saem de variáveis CSS",
+      "Usei Grid para o esqueleto e Flex para os componentes",
+      "Não existe um único <code>!important</code> no arquivo"
+    ]
+  },
+  "3": {
+    "titulo": "Consumir API com todos os estados tratados",
+    "min": 120,
+    "enunciado": "Faça uma busca que consome uma API pública e exibe os resultados em cards. O desafio não é o caminho feliz — é <strong>tratar os quatro estados</strong>: inicial, carregando, sucesso e erro. Teste o erro de verdade, desligando a internet.",
+    "criterios": [
+      "Estado inicial: a tela diz o que fazer, não fica em branco",
+      "Estado carregando: aparece antes da resposta chegar",
+      "Estado de erro: testei desligando a rede, e a mensagem é útil",
+      "Busca vazia mostra 'nada encontrado', não uma lista vazia sem explicação",
+      "Usei <code>async/await</code> com <code>try/catch</code>",
+      "Usei delegação de eventos, não um listener por card",
+      "Nenhum dado do usuário entra na página via <code>innerHTML</code>"
+    ]
+  },
+  "4": {
+    "titulo": "Processar um CSV bagunçado",
+    "min": 90,
+    "enunciado": "Receba um CSV de vendas com problemas reais — linha vazia, número com vírgula decimal, data em formato trocado, campo faltando — e produza um relatório com total por vendedor e média por mês. <strong>O programa não pode quebrar em nenhuma linha ruim</strong>: ele registra e segue.",
+    "criterios": [
+      "Abre arquivo sempre com <code>with</code>",
+      "Trata exceções específicas, nunca <code>except Exception</code> genérico",
+      "Linha inválida é registrada e pulada, sem derrubar o processamento",
+      "Usei compreensão de lista onde ela deixa mais claro, e <code>for</code> onde não",
+      "O relatório sai igual se eu rodar duas vezes",
+      "Tem função com docstring explicando o que ela faz"
+    ]
+  },
+  "5": {
+    "titulo": "Modelar um domínio com herança e interface",
+    "min": 120,
+    "enunciado": "Modele um sistema de folha de pagamento com pelo menos três tipos de funcionário que calculam salário de formas diferentes, mais uma interface para o que é tributável. Escreva testes JUnit que provem o polimorfismo funcionando.",
+    "criterios": [
+      "Usei classe abstrata onde há código comum, interface onde há só contrato",
+      "Um laço sobre <code>List&lt;Funcionario&gt;</code> chama a versão certa de cada um",
+      "Todo atributo é <code>private</code>, com acesso por método",
+      "Sobrescrevi <code>equals</code> e <code>hashCode</code> juntos onde precisei",
+      "Tenho teste que passa e teste que verifica exceção com <code>assertThrows</code>",
+      "Nenhuma comparação de String com <code>==</code> no projeto inteiro"
+    ]
+  },
+  "6": {
+    "titulo": "Programa em C sem vazamento",
+    "min": 120,
+    "enunciado": "Escreva um programa que lê uma quantidade indefinida de nomes do usuário, guarda em memória alocada dinamicamente, ordena e imprime. Depois <strong>rode com <code>valgrind</code> e prove que não há um único byte vazando</strong>.",
+    "criterios": [
+      "Compilei com <code>-Wall -Wextra</code> sem nenhum aviso",
+      "Todo <code>malloc</code> tem <code>free</code> correspondente",
+      "Verifico se <code>malloc</code> devolveu <code>NULL</code> antes de usar",
+      "Ponteiro liberado vira <code>NULL</code> em seguida",
+      "<code>valgrind</code> reporta zero vazamento e zero erro",
+      "Nenhuma função devolve endereço de variável local"
+    ]
+  },
+  "7": {
+    "titulo": "O mesmo programa, agora em C++ moderno",
+    "min": 90,
+    "enunciado": "Reescreva o programa da avaliação do Módulo 6 em C++ moderno. A regra é dura: <strong>não pode aparecer <code>new</code>, <code>delete</code>, <code>malloc</code> nem <code>free</code> em nenhum lugar</strong>. Compare o tamanho dos dois arquivos no fim.",
+    "criterios": [
+      "Usei <code>std::vector</code> e <code>std::string</code> no lugar de arrays crus",
+      "Nenhum <code>new</code> ou <code>delete</code> no código",
+      "Passei objetos grandes por <code>const&amp;</code>",
+      "Usei algoritmos da STL em vez de laços escritos à mão",
+      "Toda classe base com filhos tem destrutor virtual",
+      "Sei dizer quantas linhas economizei em relação à versão em C"
+    ]
+  },
+  "8": {
+    "titulo": "Recuperar-se de três acidentes de Git",
+    "min": 60,
+    "enunciado": "Num repositório de treino, provoque e resolva, <strong>pelo terminal</strong>: (1) um conflito de merge real; (2) um commit ruim que já foi publicado; (3) um commit 'perdido' após <code>reset --hard</code>. Registre o comando usado em cada caso.",
+    "criterios": [
+      "Resolvi o conflito editando o arquivo e apagando os marcadores",
+      "Desfiz o commit publicado com <code>revert</code>, não com <code>reset</code>",
+      "Recuperei o commit perdido usando <code>reflog</code>",
+      "Sei explicar por que <code>reset</code> seria errado no caso 2",
+      "Meu histórico final está legível, com mensagens descritivas",
+      "Nenhum segredo em nenhum commit do repositório"
+    ]
+  },
+  "9": {
+    "titulo": "Da modelagem ao índice, com número medido",
+    "min": 150,
+    "enunciado": "Modele um domínio com pelo menos quatro tabelas e um muitos-para-muitos. Popule com 200 mil linhas. Escreva a consulta de relatório mais pesada que conseguir, <strong>meça o tempo, crie o índice certo, e meça de novo</strong>. A entrega é a diferença entre os dois números.",
+    "criterios": [
+      "Modelo em 3FN, com chaves primárias e estrangeiras declaradas",
+      "Ativei a verificação de chave estrangeira no banco que estou usando",
+      "A consulta usa <code>JOIN</code>, <code>GROUP BY</code> e pelo menos uma CTE",
+      "Rodei <code>EXPLAIN</code> antes e identifiquei a varredura sequencial",
+      "Criei o índice e o plano mudou para busca por índice",
+      "Tenho os dois tempos anotados, e a diferença é de pelo menos 10 vezes"
+    ]
+  },
+  "10": {
+    "titulo": "Explorar e corrigir as próprias falhas",
+    "min": 150,
+    "enunciado": "Escreva de propósito uma API com SQL injection, XSS e IDOR. <strong>Explore as três com <code>curl</code></strong>, guardando a saída. Depois corrija e prove, com o mesmo comando, que o ataque falhou.",
+    "criterios": [
+      "Tenho a saída do ataque funcionando, antes da correção",
+      "Tenho a saída do mesmo comando falhando, depois",
+      "A correção da injeção usa parâmetros, não escape manual",
+      "O IDOR foi corrigido verificando posse, e devolve 404",
+      "Senhas com bcrypt ou argon2, nunca hash rápido",
+      "Rodei auditoria de dependências e o resultado está limpo"
+    ]
+  },
+  "11": {
+    "titulo": "Do commit ao ar, e de volta",
+    "min": 180,
+    "enunciado": "Ponha uma aplicação no ar com esteira automática. Depois <strong>quebre a produção de propósito e execute o rollback, cronometrando</strong>. A entrega é um relatório de incidente com o tempo medido.",
+    "criterios": [
+      "Aplicação e banco sobem juntos com <code>docker compose up</code>",
+      "O deploy só acontece se os testes passarem",
+      "Tem healthcheck respondendo e monitorado de fora",
+      "Segredos vêm do ambiente, nunca do código ou da imagem",
+      "Executei o rollback e anotei quanto tempo levou",
+      "Escrevi o relatório: o que quebrou, quanto durou, o que muda"
+    ]
+  },
+  "12": {
+    "titulo": "RAG que admite não saber",
+    "min": 150,
+    "enunciado": "Construa um assistente sobre uma base sua. O teste é feito com <strong>dez perguntas, das quais três não têm resposta na base</strong>. O critério de aprovação é duro: ele precisa acertar as sete e recusar as três, sem inventar nenhuma.",
+    "criterios": [
+      "As sete perguntas respondíveis foram respondidas corretamente",
+      "As três sem resposta receberam 'não encontrei', sem invenção",
+      "A instrução de recusa está explícita no prompt",
+      "A busca devolve trechos relevantes — conferi manualmente",
+      "Nenhuma chave de API aparece no código ou no histórico do Git",
+      "Sei dizer quanto custou cada chamada em tokens"
+    ]
+  },
+  "13": {
+    "titulo": "Trocar O(n²) por O(n)",
+    "min": 90,
+    "enunciado": "Pegue um código com dois laços aninhados sobre o mesmo dado — encontrar duplicados numa lista, por exemplo. <strong>Meça o tempo com 10 mil, 50 mil e 100 mil itens.</strong> Reescreva usando tabela hash e meça de novo. Monte a tabela comparativa.",
+    "criterios": [
+      "Tenho os três tempos da versão O(n²), medidos",
+      "Tenho os três tempos da versão O(n), medidos",
+      "A curva quadrática aparece nos números: dobrar a entrada mais que dobra o tempo",
+      "Sei explicar por que a tabela hash troca tempo por memória",
+      "Escrevi teste que prova que as duas versões dão o mesmo resultado",
+      "O código está versionado, com commit separado para cada versão"
+    ]
+  }
+}

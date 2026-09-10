@@ -1,0 +1,146 @@
+{
+  "0": [
+    {
+      "id": "l0-mesa",
+      "titulo": "Teste de mesa de um laço",
+      "tipo": "guiado",
+      "min": 20,
+      "enunciado": "<p>Este laboratório é no papel — de propósito. Você vai executar o código com a mão, como o computador faria.</p><pre class=\"lab-cod\">x = 2\ny = 9\nENQUANTO (x &lt; y) FA&Ccedil;A\n   x = x * 2\n   ESCREVA x\nFIM ENQUANTO</pre><p>Monte a tabela com uma linha por volta, registrando <code>x</code>, <code>y</code>, o resultado do teste e o que foi escrito.</p>",
+      "passos": [
+        "Desenhei a tabela com as colunas: passo, x, y, x &lt; y?, saída",
+        "Preenchi a linha inicial antes da primeira volta",
+        "Executei cada volta até a condição virar falsa",
+        "Escrevi a saída final: <code>4, 8, 16</code>",
+        "Confiro: o laço para quando <code>x</code> vale 16, porque 16 não é menor que 9"
+      ],
+      "dica": "A pegadinha está na última volta. Com x = 8, o teste 8 &lt; 9 é verdadeiro, então o corpo roda mais uma vez e x vira 16 — que é escrito antes de o teste reprovar."
+    }
+  ],
+  "1": [
+    {
+      "id": "l1-semantico",
+      "titulo": "Estrutura semântica sem uma única div",
+      "tipo": "html",
+      "min": 25,
+      "enunciado": "<p>Escreva a estrutura de uma página de notícia usando <strong>só tags semânticas</strong>. Os testes conferem a estrutura de verdade, lendo o HTML que você escrever.</p><p>Precisa ter: um <code>header</code> com <code>h1</code>, um <code>nav</code> com pelo menos dois links, um <code>main</code> contendo um <code>article</code>, um <code>aside</code>, um <code>footer</code>, e uma imagem com <code>alt</code> preenchido. E <strong>nenhuma</strong> <code>div</code>.</p>",
+      "inicial": "<header>\n  <h1>Título da notícia</h1>\n</header>\n\n<!-- continue daqui -->\n",
+      "testes": [
+        { "nome": "Tem header com h1 dentro", "js": "return !!doc.querySelector('header h1')" },
+        { "nome": "Tem nav com 2 links ou mais", "js": "return doc.querySelectorAll('nav a').length >= 2" },
+        { "nome": "Tem main com article dentro", "js": "return !!doc.querySelector('main article')" },
+        { "nome": "Tem aside", "js": "return !!doc.querySelector('aside')" },
+        { "nome": "Tem footer", "js": "return !!doc.querySelector('footer')" },
+        { "nome": "Imagem com alt preenchido", "js": "const i = doc.querySelector('img'); return !!i && !!i.getAttribute('alt') && i.getAttribute('alt').trim().length > 3" },
+        { "nome": "Nenhuma div", "js": "return doc.querySelectorAll('div').length === 0" }
+      ],
+      "dica": "O <code>aside</code> vai fora do <code>article</code>, não dentro — ele é conteúdo lateral da página, não da notícia."
+    }
+  ],
+  "2": [
+    {
+      "id": "l2-boxsizing",
+      "titulo": "Fazer a caixa ocupar 300px de verdade",
+      "tipo": "css",
+      "min": 20,
+      "enunciado": "<p>O elemento <code>.caixa</code> abaixo já existe no HTML com <code>width: 300px</code>, <code>padding: 20px</code> e <code>border: 5px</code>. Hoje ele ocupa 350px na tela.</p><p>Escreva o CSS que faz ele ocupar <strong>exatamente 300px</strong>, e além disso centralize o conteúdo dele na vertical e na horizontal. Os testes leem a largura calculada pelo navegador de verdade.</p>",
+      "html": "<div class=\"caixa\">centro</div>",
+      "inicial": ".caixa {\n  width: 300px;\n  padding: 20px;\n  border: 5px solid #333;\n  height: 160px;\n  /* continue daqui */\n}\n",
+      "testes": [
+        { "nome": "A caixa ocupa 300px de largura total", "js": "return Math.round(el('.caixa').getBoundingClientRect().width) === 300" },
+        { "nome": "Usa box-sizing: border-box", "js": "return css('.caixa').boxSizing === 'border-box'" },
+        { "nome": "É um container flex", "js": "return css('.caixa').display === 'flex'" },
+        { "nome": "Centraliza no eixo principal", "js": "return css('.caixa').justifyContent === 'center'" },
+        { "nome": "Centraliza no eixo cruzado", "js": "return css('.caixa').alignItems === 'center'" }
+      ],
+      "dica": "São quatro linhas: <code>box-sizing</code>, <code>display</code>, <code>justify-content</code> e <code>align-items</code>."
+    }
+  ],
+  "3": [
+    {
+      "id": "l3-encadeamento",
+      "titulo": "Encadear filter, map e reduce",
+      "tipo": "js",
+      "min": 25,
+      "enunciado": "<p>Dada a lista <code>produtos</code>, calcule o <strong>valor total em estoque</strong>: para cada produto com estoque maior que zero, multiplique preço por estoque, e some tudo.</p><p>Guarde o resultado numa constante chamada <code>total</code>. Use encadeamento — sem <code>for</code>.</p>",
+      "preludio": "const produtos = [\n  { nome: 'Camisa', preco: 50, estoque: 3 },\n  { nome: 'Calça',  preco: 120, estoque: 0 },\n  { nome: 'Boné',   preco: 30, estoque: 7 }\n];",
+      "inicial": "const total = produtos\n  // continue daqui\n  ;\n",
+      "testes": [
+        { "nome": "total existe e é número", "js": "return typeof total === 'number' && !Number.isNaN(total)" },
+        { "nome": "total vale 360", "js": "return total === 360" },
+        { "nome": "Não usou for nem while", "js": "return !/\\b(for|while)\\b/.test(fonte)" },
+        { "nome": "Usou filter, map e reduce", "js": "return /filter/.test(fonte) && /map/.test(fonte) && /reduce/.test(fonte)" }
+      ],
+      "dica": "Camisa dá 50×3 = 150, Boné dá 30×7 = 210, e a Calça é filtrada fora por ter estoque zero. O <code>reduce</code> precisa do valor inicial 0."
+    },
+    {
+      "id": "l3-closure",
+      "titulo": "Contador com estado privado",
+      "tipo": "js",
+      "min": 20,
+      "enunciado": "<p>Escreva a função <code>criarContador</code>, que devolve uma função. Cada chamada da função devolvida aumenta o contador em 1 e devolve o valor novo.</p><p>O estado precisa ser <strong>privado</strong>: não pode existir variável global que dê para mexer de fora, e dois contadores criados separadamente não podem se misturar.</p>",
+      "inicial": "function criarContador() {\n  // continue daqui\n}\n",
+      "testes": [
+        { "nome": "criarContador é uma função", "js": "return typeof criarContador === 'function'" },
+        { "nome": "Devolve uma função", "js": "return typeof criarContador() === 'function'" },
+        { "nome": "Conta 1, 2, 3 em sequência", "js": "const c = criarContador(); return c() === 1 && c() === 2 && c() === 3" },
+        { "nome": "Dois contadores são independentes", "js": "const a = criarContador(), b = criarContador(); a(); a(); return a() === 3 && b() === 1" }
+      ],
+      "dica": "A variável de contagem vai <em>dentro</em> de <code>criarContador</code>, antes do <code>return</code>. A função devolvida mantém acesso a ela — é a closure da Aula 3.8."
+    }
+  ],
+  "10": [
+    {
+      "id": "l10-escape",
+      "titulo": "Escapar entrada para impedir XSS",
+      "tipo": "js",
+      "min": 25,
+      "enunciado": "<p>Escreva a função <code>escapar(texto)</code>, que devolve o texto com os caracteres perigosos de HTML convertidos em entidades, de forma que o resultado possa ir para um <code>innerHTML</code> sem virar código.</p><p>Precisa tratar <code>&amp;</code>, <code>&lt;</code>, <code>&gt;</code>, aspas duplas e aspas simples.</p><p><strong>Atenção à ordem:</strong> um dos cinco tem que ser trocado antes dos outros, ou você corrompe o próprio escape.</p>",
+      "inicial": "function escapar(texto) {\n  // continue daqui\n}\n",
+      "testes": [
+        { "nome": "escapar é uma função", "js": "return typeof escapar === 'function'" },
+        { "nome": "Neutraliza uma tag script", "js": "return !/[<>]/.test(escapar('<script>alert(1)</script>'))" },
+        { "nome": "Escapa o E comercial", "js": "return escapar('a & b') === 'a &amp; b'" },
+        { "nome": "Escapa aspas duplas e simples", "js": "const r = escapar(`\\\"'`); return !r.includes('\\\"') && !r.includes(\"'\")" },
+        { "nome": "Não gera escape duplo (a ordem está certa)", "js": "return escapar('<') === '&lt;' && escapar('&lt;') === '&amp;lt;'" },
+        { "nome": "Texto sem caractere especial passa intacto", "js": "return escapar('Olá, mundo 123') === 'Olá, mundo 123'" }
+      ],
+      "dica": "O <code>&amp;</code> tem que ser o primeiro. Se você trocar <code>&lt;</code> por <code>&amp;lt;</code> antes, a troca seguinte do <code>&amp;</code> transformaria esse <code>&amp;</code> recém-criado em <code>&amp;amp;</code>, e o resultado sairia <code>&amp;amp;lt;</code>."
+    }
+  ],
+  "12": [
+    {
+      "id": "l12-cosseno",
+      "titulo": "Similaridade do cosseno na mão",
+      "tipo": "js",
+      "min": 25,
+      "enunciado": "<p>Implemente <code>cosseno(a, b)</code>, que recebe dois vetores (arrays de números) e devolve a similaridade do cosseno entre eles: o produto escalar dividido pelo produto das magnitudes.</p><p>É a conta que decide qual documento vence numa busca semântica — a mesma da Aula 12.11, agora escrita por você.</p>",
+      "inicial": "function cosseno(a, b) {\n  // continue daqui\n}\n",
+      "testes": [
+        { "nome": "cosseno é uma função", "js": "return typeof cosseno === 'function'" },
+        { "nome": "Vetores idênticos dão 1", "js": "return Math.abs(cosseno([1,2,3],[1,2,3]) - 1) < 1e-9" },
+        { "nome": "Vetores perpendiculares dão 0", "js": "return Math.abs(cosseno([1,0],[0,1])) < 1e-9" },
+        { "nome": "Vetores opostos dão -1", "js": "return Math.abs(cosseno([1,2],[-1,-2]) + 1) < 1e-9" },
+        { "nome": "A escala não importa, só a direção", "js": "return Math.abs(cosseno([1,2,3],[2,4,6]) - 1) < 1e-9" }
+      ],
+      "dica": "Produto escalar é a soma de <code>a[i] * b[i]</code>. Magnitude é a raiz da soma dos quadrados. O último teste é o que prova que a conta mede ângulo, não tamanho."
+    }
+  ],
+  "13": [
+    {
+      "id": "l13-binaria",
+      "titulo": "Busca binária, e a diferença que ela faz",
+      "tipo": "js",
+      "min": 30,
+      "enunciado": "<p>Implemente <code>buscaBinaria(v, alvo)</code> num array <strong>já ordenado</strong>, devolvendo o índice do alvo ou <code>-1</code> se não existir.</p><p>O último teste conta quantas vezes você <em>lê</em> o array num vetor de 100 mil posições, e exige menos de 100. Uma busca binária faz cerca de 33; uma varredura linear faria 100 mil. O teste não mede elegância — mede a ordem de grandeza.</p>",
+      "inicial": "function buscaBinaria(v, alvo) {\n  // continue daqui\n}\n",
+      "testes": [
+        { "nome": "Acha um elemento no meio", "js": "return buscaBinaria([1,3,5,7,9], 5) === 2" },
+        { "nome": "Acha o primeiro e o último", "js": "return buscaBinaria([1,3,5,7,9], 1) === 0 && buscaBinaria([1,3,5,7,9], 9) === 4" },
+        { "nome": "Devolve -1 quando não existe", "js": "return buscaBinaria([1,3,5,7,9], 4) === -1" },
+        { "nome": "Funciona em array vazio", "js": "return buscaBinaria([], 1) === -1" },
+        { "nome": "É mesmo O(log n): menos de 100 leituras num array de 100 mil", "js": "let n = 0; const v = Array.from({length: 100000}, (_, i) => i * 2); const proxy = new Proxy(v, { get(t, p) { if (typeof p === 'string' && /^\\d+$/.test(p)) n++; return t[p]; } }); const achou = buscaBinaria(proxy, 199998); return achou === 99999 && n > 0 && n < 100" }
+      ],
+      "dica": "Mantenha dois limites, <code>inicio</code> e <code>fim</code>. A cada volta olhe o meio: se for o alvo, achou; se for menor, jogue o início para depois do meio; se for maior, jogue o fim para antes."
+    }
+  ]
+}
