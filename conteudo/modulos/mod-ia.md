@@ -97,8 +97,10 @@ for epoca in range(10000):
     b -= taxa * grad_b
 
 print(f"preço ≈ {a:.2f} × tamanho + {b:.2f}")
-# preço ≈ 4.00 × tamanho + 0.02   → cerca de R$ 4 mil por m²
+# preço ≈ 4.00 × tamanho + 0.03   → cerca de R$ 4 mil por m²
 ```
+
+O `a` chegou em 4,00 porque os dados foram construídos assim: todas as casas custam exatamente R$ 4 mil por m². O `b` parou em 0,03 em vez de zero cravado — ele ainda estava descendo a ladeira quando as 10 mil voltas acabaram. Aumente as épocas e ele se aproxima mais de zero.
 
 Rode isso. São vinte linhas, sem biblioteca, e é **literalmente** o mesmo mecanismo que treina um modelo de bilhões de parâmetros. A diferença é escala: em vez de dois números (`a` e `b`), são bilhões; em vez de uma reta, uma função com bilhões de dobras. O laço é o mesmo: prever, medir erro, ajustar, repetir.
 
@@ -209,17 +211,18 @@ Toda a aparência de raciocínio emerge daí. Não há plano, banco de fatos nem
 
 ### Aula 12.6 — Tokens, contexto e temperatura
 
-**Token** é a unidade que o modelo enxerga. Não é palavra nem letra — é um pedaço, geralmente entre três e quatro caracteres em português.
+**Token** é a unidade que o modelo enxerga. Não é palavra nem letra — é um pedaço, tipicamente de alguns caracteres.
 
 ```
-"programação"        →  ["program", "ação"]          2 tokens
-"O gato dormiu."     →  ["O", " gato", " dormiu", "."]  4 tokens
-"antidisestablish"   →  ["anti", "dis", "establish"]  3 tokens
+"programação"        →  ["program", "ação"]            2 tokens
+"O gato dormiu."     →  ["O", " gato", " dormiu", "."] 4 tokens
 ```
+
+*(A divisão exata depende do tokenizador de cada modelo — os exemplos acima ilustram o formato, não são a resposta de um modelo específico. Todo provedor oferece um contador de tokens; use-o quando o número importar.)*
 
 Duas consequências práticas que confundem muita gente:
 
-- **Você paga por token**, não por palavra. Regra de bolso para português: 1 token ≈ 0,75 palavra.
+- **Você paga por token**, não por palavra. E **português custa mais que inglês**: os tokenizadores são treinados majoritariamente em texto inglês, então palavra em português costuma quebrar em mais pedaços. Uma palavra que em inglês é um token pode virar dois ou três aqui. Se você orçou pela contagem em inglês, a conta vem maior.
 - **O modelo não vê letras.** Por isso ele erra ao contar quantos "r" há em "morrer" ou ao inverter uma palavra: essas tarefas exigem enxergar caracteres, e ele enxerga blocos. Não é burrice — é o formato da entrada.
 
 **Janela de contexto** é quanto ele consegue ler de uma vez, medida em tokens. Passou do limite, o começo é cortado. É por isso que uma conversa longa parece "esquecer" o que foi dito lá atrás: não foi esquecimento, foi truncamento.
@@ -398,7 +401,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 modelo = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
 documentos = [
-    "Para encerrar seu plano recorrente, acesse Configurações > Plano.",
+    "Encerre seu plano recorrente em Configurações > Plano.",
     "O prazo de entrega padrão é de 5 dias úteis.",
     "Aceitamos cartão, boleto e Pix.",
 ]
@@ -412,10 +415,12 @@ notas = cosine_similarity(vet_perg, vet_docs)[0]
 melhor = notas.argmax()
 
 print(f"{notas[melhor]:.2f} — {documentos[melhor]}")
-# 0.71 — Para encerrar seu plano recorrente, acesse Configurações > Plano.
+# → o primeiro documento vence, com folga sobre os outros dois
 ```
 
-Repare: a pergunta usa "cancelar assinatura", o documento diz "encerrar plano recorrente". **Zero palavras em comum**, e mesmo assim ele foi encontrado. Isso é busca semântica, e é a peça que falta para a próxima aula.
+Repare nas palavras: a pergunta fala em "cancelar assinatura"; o documento, em "encerrar plano recorrente". **Nenhuma palavra aparece nos dois** — confira uma a uma — e mesmo assim ele foi encontrado. Isso é busca semântica, e é a peça que falta para a próxima aula.
+
+*(Não cito a nota exata de propósito: ela muda conforme o modelo de embedding. O que importa, e é estável, é qual documento vence.)*
 
 A **similaridade do cosseno** mede o ângulo entre dois vetores: 1 é mesma direção, 0 é sem relação. Não é o único jeito de medir, mas é o padrão.
 

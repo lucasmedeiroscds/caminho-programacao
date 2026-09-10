@@ -331,6 +331,14 @@ git push        # agora sim
 
 **Pull Request** (ou *Merge Request*, no GitLab) é um pedido: *"revisem estas mudanças antes de entrarem na `main`"*. É onde acontece a revisão de código, e é a prática que mais melhora um time — e você.
 
+**Branch protegida** é o que transforma essa combinação em regra, e não em promessa. No GitHub, em `Settings > Branches > Add rule`, você marca a `main` e exige, por exemplo:
+
+- Pull Request obrigatório — ninguém dá `push` direto nela, nem quem criou o repositório
+- Pelo menos uma aprovação antes do merge
+- Verificações automáticas passando (é o gancho que o Módulo 11 vai usar)
+
+Sem isso, "não commitamos direto na `main`" depende de todo mundo lembrar, sempre, inclusive na sexta às sete da noite. Com isso, o servidor recusa. **Ligue no seu projeto pessoal também** — você é o time inteiro, e é você quem vai esquecer.
+
 **Como escrever um PR que é aprovado rápido:**
 
 - **Pequeno.** Um PR de 50 linhas recebe revisão cuidadosa; um de 2.000 recebe "aprovado" sem ninguém ler.

@@ -81,7 +81,22 @@ consulta = "SELECT * FROM usuarios WHERE email = %s AND senha_hash = %s"
 cursor.execute(consulta, (email, senha_hash))
 ```
 
-Repare na diferença: o `%s` não é substituição de texto. O comando vai ao banco **separado** dos valores, e o banco trata o valor como valor, sempre. Se o atacante mandar `' OR '1'='1' --`, o banco procura literalmente um email chamado `' OR '1'='1' --`, não acha, e devolve zero linhas.
+Repare na diferença: o `%s` **não é substituição de texto** — apesar de parecer, e essa semelhança é a maior fonte de confusão aqui. Ele não é o `%` de formatação do Python. É um marcador que a biblioteca do banco entende: o comando vai ao servidor **separado** dos valores, e o valor é tratado como valor, sempre. Se o atacante mandar `' OR '1'='1' --`, o banco procura literalmente um email com esse nome, não acha, e devolve zero linhas.
+
+**O marcador muda conforme a biblioteca**, e copiar o errado dá erro de sintaxe:
+
+| Biblioteca | Marcador |
+|------------|----------|
+| `psycopg2` (PostgreSQL) | `%s` |
+| `sqlite3` (o do Módulo 9) | `?` |
+| `mysql-connector` | `%s` |
+
+```python
+# sqlite3 — o mesmo código, com o marcador dele
+cursor.execute("SELECT * FROM usuarios WHERE email = ? AND senha_hash = ?", (email, senha_hash))
+```
+
+O que **nunca** muda é a regra: os valores vão no segundo argumento, jamais concatenados na string.
 
 **Nunca monte SQL com concatenação ou f-string.** Nem "só neste caso", nem "esse valor vem de dentro". Use parâmetros sempre — é mais curto, mais rápido e seguro.
 

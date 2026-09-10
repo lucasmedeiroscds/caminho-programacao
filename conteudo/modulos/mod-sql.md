@@ -185,6 +185,14 @@ CREATE TABLE pedidos (
 
 A linha `FOREIGN KEY` diz: *o `cliente_id` daqui tem que existir lá em `clientes.id`*. A partir dela, o banco **recusa** um pedido de cliente inexistente, e **recusa** apagar um cliente que ainda tem pedidos. A integridade deixa de depender do seu código lembrar.
 
+**No SQLite, com uma pegadinha que engana muita gente:** ele aceita a declaração acima mas **não a aplica** — por compatibilidade histórica, a verificação vem desligada. Você insere um pedido de cliente inexistente e ele entra numa boa. Precisa ligar, **em toda conexão**:
+
+```sql
+PRAGMA foreign_keys = ON;
+```
+
+Se você testar integridade no SQLite sem essa linha, vai concluir que a chave estrangeira não serve para nada. No PostgreSQL, ela já vem valendo.
+
 Os três tipos de relacionamento:
 
 | Tipo | Exemplo | Como se faz |
@@ -278,7 +286,11 @@ ORDER BY faturamento DESC;
 
 Resultado: uma linha por UF, com a contagem e a soma daquele estado.
 
-**A regra que o banco não deixa você quebrar:** toda coluna do `SELECT` precisa estar no `GROUP BY` **ou** dentro de uma função de agregação. Faz sentido — se você agrupou 500 pedidos do Ceará numa linha só, qual `data` o banco deveria mostrar? Não existe resposta, então ele recusa a pergunta.
+**A regra do `GROUP BY`:** toda coluna do `SELECT` precisa estar no `GROUP BY` **ou** dentro de uma função de agregação. Faz sentido — se você agrupou 500 pedidos do Ceará numa linha só, qual `data` o banco deveria mostrar? Não existe resposta.
+
+**Atenção, porque aqui os bancos discordam.** O PostgreSQL recusa a consulta e explica o erro. O **SQLite aceita** e devolve a data de uma linha qualquer do grupo, escolhida por ele — sem aviso. O MySQL depende de configuração.
+
+Isso importa para você agora: o módulo manda começar pelo SQLite, e é justamente ele que deixa passar. Se você escrever uma consulta assim e ela funcionar, **não conclua que está certa** — ela vai quebrar no PostgreSQL do primeiro emprego, ou pior, vai devolver um número plausível e errado. Siga a regra mesmo quando o banco não cobrar.
 
 **`WHERE` contra `HAVING`** — a confusão clássica:
 
@@ -395,11 +407,16 @@ CREATE INDEX idx_pedidos_cli_data ON pedidos(cliente_id, data);
 **A ferramenta que dá a resposta em vez de palpite:**
 
 ```sql
+-- PostgreSQL: mostra o plano E os tempos medidos
 EXPLAIN ANALYZE
+SELECT * FROM pedidos WHERE cliente_id = 42;
+
+-- SQLite: sintaxe própria, e só o plano, sem cronometrar
+EXPLAIN QUERY PLAN
 SELECT * FROM pedidos WHERE cliente_id = 42;
 ```
 
-Ele mostra o plano que o banco escolheu. Se aparecer *Seq Scan* (varredura sequencial) numa tabela grande com filtro, falta índice. Se aparecer *Index Scan*, ele está usando.
+Ele mostra o plano que o banco escolheu. No PostgreSQL, se aparecer *Seq Scan* (varredura sequencial) numa tabela grande com filtro, falta índice; *Index Scan* significa que ele está usando. No SQLite, procure `SCAN` contra `SEARCH ... USING INDEX` — mesma leitura, outro vocabulário.
 
 **A armadilha que anula o índice:** aplicar função na coluna filtrada.
 

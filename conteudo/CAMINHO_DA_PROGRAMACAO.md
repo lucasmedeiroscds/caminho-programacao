@@ -4079,6 +4079,14 @@ git push        # agora sim
 
 **Pull Request** (ou *Merge Request*, no GitLab) é um pedido: *"revisem estas mudanças antes de entrarem na `main`"*. É onde acontece a revisão de código, e é a prática que mais melhora um time — e você.
 
+**Branch protegida** é o que transforma essa combinação em regra, e não em promessa. No GitHub, em `Settings > Branches > Add rule`, você marca a `main` e exige, por exemplo:
+
+- Pull Request obrigatório — ninguém dá `push` direto nela, nem quem criou o repositório
+- Pelo menos uma aprovação antes do merge
+- Verificações automáticas passando (é o gancho que o Módulo 11 vai usar)
+
+Sem isso, "não commitamos direto na `main`" depende de todo mundo lembrar, sempre, inclusive na sexta às sete da noite. Com isso, o servidor recusa. **Ligue no seu projeto pessoal também** — você é o time inteiro, e é você quem vai esquecer.
+
 **Como escrever um PR que é aprovado rápido:**
 
 - **Pequeno.** Um PR de 50 linhas recebe revisão cuidadosa; um de 2.000 recebe "aprovado" sem ninguém ler.
@@ -4364,6 +4372,14 @@ CREATE TABLE pedidos (
 
 A linha `FOREIGN KEY` diz: *o `cliente_id` daqui tem que existir lá em `clientes.id`*. A partir dela, o banco **recusa** um pedido de cliente inexistente, e **recusa** apagar um cliente que ainda tem pedidos. A integridade deixa de depender do seu código lembrar.
 
+**No SQLite, com uma pegadinha que engana muita gente:** ele aceita a declaração acima mas **não a aplica** — por compatibilidade histórica, a verificação vem desligada. Você insere um pedido de cliente inexistente e ele entra numa boa. Precisa ligar, **em toda conexão**:
+
+```sql
+PRAGMA foreign_keys = ON;
+```
+
+Se você testar integridade no SQLite sem essa linha, vai concluir que a chave estrangeira não serve para nada. No PostgreSQL, ela já vem valendo.
+
 Os três tipos de relacionamento:
 
 | Tipo | Exemplo | Como se faz |
@@ -4457,7 +4473,11 @@ ORDER BY faturamento DESC;
 
 Resultado: uma linha por UF, com a contagem e a soma daquele estado.
 
-**A regra que o banco não deixa você quebrar:** toda coluna do `SELECT` precisa estar no `GROUP BY` **ou** dentro de uma função de agregação. Faz sentido — se você agrupou 500 pedidos do Ceará numa linha só, qual `data` o banco deveria mostrar? Não existe resposta, então ele recusa a pergunta.
+**A regra do `GROUP BY`:** toda coluna do `SELECT` precisa estar no `GROUP BY` **ou** dentro de uma função de agregação. Faz sentido — se você agrupou 500 pedidos do Ceará numa linha só, qual `data` o banco deveria mostrar? Não existe resposta.
+
+**Atenção, porque aqui os bancos discordam.** O PostgreSQL recusa a consulta e explica o erro. O **SQLite aceita** e devolve a data de uma linha qualquer do grupo, escolhida por ele — sem aviso. O MySQL depende de configuração.
+
+Isso importa para você agora: o módulo manda começar pelo SQLite, e é justamente ele que deixa passar. Se você escrever uma consulta assim e ela funcionar, **não conclua que está certa** — ela vai quebrar no PostgreSQL do primeiro emprego, ou pior, vai devolver um número plausível e errado. Siga a regra mesmo quando o banco não cobrar.
 
 **`WHERE` contra `HAVING`** — a confusão clássica:
 
@@ -4574,11 +4594,16 @@ CREATE INDEX idx_pedidos_cli_data ON pedidos(cliente_id, data);
 **A ferramenta que dá a resposta em vez de palpite:**
 
 ```sql
+-- PostgreSQL: mostra o plano E os tempos medidos
 EXPLAIN ANALYZE
+SELECT * FROM pedidos WHERE cliente_id = 42;
+
+-- SQLite: sintaxe própria, e só o plano, sem cronometrar
+EXPLAIN QUERY PLAN
 SELECT * FROM pedidos WHERE cliente_id = 42;
 ```
 
-Ele mostra o plano que o banco escolheu. Se aparecer *Seq Scan* (varredura sequencial) numa tabela grande com filtro, falta índice. Se aparecer *Index Scan*, ele está usando.
+Ele mostra o plano que o banco escolheu. No PostgreSQL, se aparecer *Seq Scan* (varredura sequencial) numa tabela grande com filtro, falta índice; *Index Scan* significa que ele está usando. No SQLite, procure `SCAN` contra `SEARCH ... USING INDEX` — mesma leitura, outro vocabulário.
 
 **A armadilha que anula o índice:** aplicar função na coluna filtrada.
 
@@ -4762,7 +4787,22 @@ consulta = "SELECT * FROM usuarios WHERE email = %s AND senha_hash = %s"
 cursor.execute(consulta, (email, senha_hash))
 ```
 
-Repare na diferença: o `%s` não é substituição de texto. O comando vai ao banco **separado** dos valores, e o banco trata o valor como valor, sempre. Se o atacante mandar `' OR '1'='1' --`, o banco procura literalmente um email chamado `' OR '1'='1' --`, não acha, e devolve zero linhas.
+Repare na diferença: o `%s` **não é substituição de texto** — apesar de parecer, e essa semelhança é a maior fonte de confusão aqui. Ele não é o `%` de formatação do Python. É um marcador que a biblioteca do banco entende: o comando vai ao servidor **separado** dos valores, e o valor é tratado como valor, sempre. Se o atacante mandar `' OR '1'='1' --`, o banco procura literalmente um email com esse nome, não acha, e devolve zero linhas.
+
+**O marcador muda conforme a biblioteca**, e copiar o errado dá erro de sintaxe:
+
+| Biblioteca | Marcador |
+|------------|----------|
+| `psycopg2` (PostgreSQL) | `%s` |
+| `sqlite3` (o do Módulo 9) | `?` |
+| `mysql-connector` | `%s` |
+
+```python
+# sqlite3 — o mesmo código, com o marcador dele
+cursor.execute("SELECT * FROM usuarios WHERE email = ? AND senha_hash = ?", (email, senha_hash))
+```
+
+O que **nunca** muda é a regra: os valores vão no segundo argumento, jamais concatenados na string.
 
 **Nunca monte SQL com concatenação ou f-string.** Nem "só neste caso", nem "esse valor vem de dentro". Use parâmetros sempre — é mais curto, mais rápido e seguro.
 
@@ -5731,8 +5771,10 @@ for epoca in range(10000):
     b -= taxa * grad_b
 
 print(f"preço ≈ {a:.2f} × tamanho + {b:.2f}")
-# preço ≈ 4.00 × tamanho + 0.02   → cerca de R$ 4 mil por m²
+# preço ≈ 4.00 × tamanho + 0.03   → cerca de R$ 4 mil por m²
 ```
+
+O `a` chegou em 4,00 porque os dados foram construídos assim: todas as casas custam exatamente R$ 4 mil por m². O `b` parou em 0,03 em vez de zero cravado — ele ainda estava descendo a ladeira quando as 10 mil voltas acabaram. Aumente as épocas e ele se aproxima mais de zero.
 
 Rode isso. São vinte linhas, sem biblioteca, e é **literalmente** o mesmo mecanismo que treina um modelo de bilhões de parâmetros. A diferença é escala: em vez de dois números (`a` e `b`), são bilhões; em vez de uma reta, uma função com bilhões de dobras. O laço é o mesmo: prever, medir erro, ajustar, repetir.
 
@@ -5843,17 +5885,18 @@ Toda a aparência de raciocínio emerge daí. Não há plano, banco de fatos nem
 
 ### Aula 12.6 — Tokens, contexto e temperatura
 
-**Token** é a unidade que o modelo enxerga. Não é palavra nem letra — é um pedaço, geralmente entre três e quatro caracteres em português.
+**Token** é a unidade que o modelo enxerga. Não é palavra nem letra — é um pedaço, tipicamente de alguns caracteres.
 
 ```
-"programação"        →  ["program", "ação"]          2 tokens
-"O gato dormiu."     →  ["O", " gato", " dormiu", "."]  4 tokens
-"antidisestablish"   →  ["anti", "dis", "establish"]  3 tokens
+"programação"        →  ["program", "ação"]            2 tokens
+"O gato dormiu."     →  ["O", " gato", " dormiu", "."] 4 tokens
 ```
+
+*(A divisão exata depende do tokenizador de cada modelo — os exemplos acima ilustram o formato, não são a resposta de um modelo específico. Todo provedor oferece um contador de tokens; use-o quando o número importar.)*
 
 Duas consequências práticas que confundem muita gente:
 
-- **Você paga por token**, não por palavra. Regra de bolso para português: 1 token ≈ 0,75 palavra.
+- **Você paga por token**, não por palavra. E **português custa mais que inglês**: os tokenizadores são treinados majoritariamente em texto inglês, então palavra em português costuma quebrar em mais pedaços. Uma palavra que em inglês é um token pode virar dois ou três aqui. Se você orçou pela contagem em inglês, a conta vem maior.
 - **O modelo não vê letras.** Por isso ele erra ao contar quantos "r" há em "morrer" ou ao inverter uma palavra: essas tarefas exigem enxergar caracteres, e ele enxerga blocos. Não é burrice — é o formato da entrada.
 
 **Janela de contexto** é quanto ele consegue ler de uma vez, medida em tokens. Passou do limite, o começo é cortado. É por isso que uma conversa longa parece "esquecer" o que foi dito lá atrás: não foi esquecimento, foi truncamento.
@@ -6032,7 +6075,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 modelo = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
 documentos = [
-    "Para encerrar seu plano recorrente, acesse Configurações > Plano.",
+    "Encerre seu plano recorrente em Configurações > Plano.",
     "O prazo de entrega padrão é de 5 dias úteis.",
     "Aceitamos cartão, boleto e Pix.",
 ]
@@ -6046,10 +6089,12 @@ notas = cosine_similarity(vet_perg, vet_docs)[0]
 melhor = notas.argmax()
 
 print(f"{notas[melhor]:.2f} — {documentos[melhor]}")
-# 0.71 — Para encerrar seu plano recorrente, acesse Configurações > Plano.
+# → o primeiro documento vence, com folga sobre os outros dois
 ```
 
-Repare: a pergunta usa "cancelar assinatura", o documento diz "encerrar plano recorrente". **Zero palavras em comum**, e mesmo assim ele foi encontrado. Isso é busca semântica, e é a peça que falta para a próxima aula.
+Repare nas palavras: a pergunta fala em "cancelar assinatura"; o documento, em "encerrar plano recorrente". **Nenhuma palavra aparece nos dois** — confira uma a uma — e mesmo assim ele foi encontrado. Isso é busca semântica, e é a peça que falta para a próxima aula.
+
+*(Não cito a nota exata de propósito: ela muda conforme o modelo de embedding. O que importa, e é estável, é qual documento vence.)*
 
 A **similaridade do cosseno** mede o ângulo entre dois vetores: 1 é mesma direção, 0 é sem relação. Não é o único jeito de medir, mas é o padrão.
 
