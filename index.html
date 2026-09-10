@@ -1078,7 +1078,7 @@ button { font: inherit; color: inherit; }
   width: 12px; height: 12px;
   border-radius: 3px;
   background: var(--sup-3);
-  border: 1px solid var(--linha-2);
+  border: 1px solid var(--linha);
 }
 .mapa-dia.on { background: var(--ocre); border-color: var(--ocre); }
 .mapa-dia.futuro { opacity: 0.3; border-style: dashed; }
@@ -1288,6 +1288,212 @@ button { font: inherit; color: inherit; }
 @media print {
   .tutor, .tutor-abrir { display: none !important; }
 }
+
+/* ============================================================
+   Revisão visual — movimento com propósito
+
+   Regra que guiou tudo aqui: animação só onde ela informa. A entrada
+   escalonada mostra a hierarquia da página; o anel e os números
+   crescendo mostram progresso; a trilha do topo mostra onde você está.
+   Nada pisca só para piscar, e tudo some sob prefers-reduced-motion.
+   ============================================================ */
+
+/* ---- modos do tutor: só um dos dois textos aparece ---- */
+.tutor-modo-ia { display: none; }
+:root[data-tutor-ia] .tutor-modo-ia { display: inline; }
+:root[data-tutor-ia] .tutor-modo-busca { display: none; }
+
+/* ---- sugestões de pergunta ---- */
+.tutor-sug { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.tutor-sug button {
+  padding: 5px 10px;
+  background: var(--sup-2);
+  border: 1px solid var(--linha-2);
+  border-radius: 999px;
+  color: var(--tinta-2);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: border-color var(--transicao), color var(--transicao), background var(--transicao);
+}
+.tutor-sug button:hover { border-color: var(--caneta); color: var(--caneta); background: var(--caneta-fraca); }
+
+/* ---- trechos citados ---- */
+.tutor-fontes { display: flex; flex-direction: column; gap: 6px; }
+.tutor-fontes-cab {
+  margin: 2px 0 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--tinta-3);
+}
+.tutor-fonte {
+  display: block;
+  padding: 9px 11px;
+  background: var(--sup-2);
+  border: 1px solid var(--linha-2);
+  border-left: 3px solid var(--caneta);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--transicao), transform var(--transicao);
+}
+.tutor-fonte:hover { border-left-color: var(--ocre); transform: translateX(2px); }
+.tutor-fonte-onde {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.06em;
+  color: var(--caneta);
+  margin-bottom: 3px;
+}
+.tutor-fonte-txt { display: block; font-size: 12.8px; line-height: 1.5; color: var(--tinta-2); }
+.tutor-nada { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--tinta-3); }
+
+/* Reticências animadas enquanto o modelo pensa */
+.tutor-bolha.pensando { color: var(--tinta-3); font-style: italic; }
+.tutor-bolha.pensando::after {
+  content: '';
+  display: inline-block;
+  width: 0; overflow: hidden;
+  vertical-align: bottom;
+  animation: reticencias 1.4s steps(4, end) infinite;
+}
+@keyframes reticencias { to { width: 1.2em; } }
+
+/* ============================================================
+   Trilha do topo — onde você está no caminho
+   ============================================================ */
+
+.trilha-topo {
+  display: flex;
+  gap: 7px;
+  margin-top: 20px;
+}
+.trilha-passo {
+  flex: 1;
+  min-width: 0;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  padding-top: 22px;
+}
+/* O trilho vazio precisa se ler como elemento desenhado, não como ausência.
+   `display: block` é obrigatório: é um span, e altura não vale em inline. */
+.trilha-barra {
+  display: block;
+  height: 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cor-faixa) 18%, var(--sup-3));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cor-faixa) 28%, transparent);
+  overflow: hidden;
+  position: relative;
+}
+.trilha-barra i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--cor-faixa);
+  width: 0;
+  animation: encher 900ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-delay: var(--atraso, 0ms);
+}
+@keyframes encher { to { width: var(--ate); } }
+
+.trilha-passo b {
+  display: block;
+  margin-top: 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--tinta-3);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--transicao);
+}
+.trilha-passo:hover b { color: var(--tinta); }
+.trilha-passo.aqui b { color: var(--cor-faixa); }
+.trilha-passo.aqui::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 50%;
+  width: 5px; height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--cor-faixa);
+}
+
+/* ============================================================
+   Entrada escalonada — uma sequência, não efeitos soltos
+   ============================================================ */
+
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/*
+ * Anima a partir do estado VISÍVEL: o elemento já está pintado quando a
+ * página abre, e a animação só o traz de baixo. Assim uma captura de tela
+ * ou um leitor que chega no meio nunca pega a página vazia.
+ */
+.entra { animation: surgir 420ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards; }
+.entra-1 { animation-delay: 40ms; }
+.entra-2 { animation-delay: 90ms; }
+.entra-3 { animation-delay: 140ms; }
+.entra-4 { animation-delay: 190ms; }
+.entra-5 { animation-delay: 240ms; }
+
+/* ---- realce quando um valor muda ---- */
+@keyframes pulso {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ocre) 45%, transparent); }
+  100% { box-shadow: 0 0 0 9px transparent; }
+}
+.pulsa { animation: pulso 700ms ease-out; }
+
+/* ============================================================
+   Polimento de superfície
+   ============================================================ */
+
+/* O cartão de continuar ganha um trilho de cor à esquerda */
+.seguir {
+  position: relative;
+  overflow: hidden;
+}
+.seguir::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--cor-faixa, var(--caneta));
+}
+
+.cartao-link:active { transform: translateY(0); }
+
+/* Ladrilhos ganham vida no hover, e o número fica tabular para não dançar */
+.ladrilho { transition: border-color var(--transicao), transform var(--transicao); }
+.ladrilho:hover { border-color: var(--linha); transform: translateY(-1px); }
+
+/* Barras de progresso com brilho sutil quando cheias */
+.barra.cheia i {
+  background: linear-gradient(90deg, var(--certo), color-mix(in srgb, var(--certo) 70%, var(--ocre)));
+}
+
+/* Marca de conclusão com um saltinho ao ligar */
+@keyframes tiquei { 0% { transform: scale(0.6); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+.tique[aria-pressed='true'] svg { animation: tiquei 260ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* Aula lida: o código fica levemente recuado da atenção */
+.item.feito .item-cod { opacity: 0.55; }
+
+/* Foco de leitura: o índice pegajoso ganha sombra ao descolar do topo */
+.indice { border-bottom: 1px solid transparent; transition: border-color var(--transicao); }
+
+@media (prefers-reduced-motion: reduce) {
+  .entra, .tique[aria-pressed='true'] svg, .pulsa, .tutor-bolha.pensando::after { animation: none !important; }
+  .trilha-barra i { animation: none !important; width: var(--ate) !important; }
+}
 </style>
 
 <a class="pular" href="#palco">Pular para o conteúdo</a>
@@ -1369,15 +1575,15 @@ button { font: inherit; color: inherit; }
 
 <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
 
-<button class="tutor-abrir" id="tutor-abrir" type="button" aria-expanded="false" aria-controls="tutor" hidden>
+<button class="tutor-abrir" id="tutor-abrir" type="button" aria-expanded="false" aria-controls="tutor">
   <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 12.5a2 2 0 0 1-2 2H7l-4 3v-13a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-  <span>Perguntar sobre esta página</span>
+  <span>Tirar dúvida</span>
 </button>
 
-<aside class="tutor" id="tutor" hidden aria-label="Tutor do portal">
+<aside class="tutor" id="tutor" hidden aria-label="Tirar dúvida sobre o material">
   <header class="tutor-cab">
     <div style="min-width:0">
-      <p class="rot">Tutor · responde com esta página</p>
+      <p class="rot"><span class="tutor-modo-ia">Tutor · responde e cita</span><span class="tutor-modo-busca">Busca no material</span></p>
       <p class="tutor-ctx" id="tutor-ctx"></p>
     </div>
     <span style="display:flex;gap:4px">
@@ -1391,11 +1597,20 @@ button { font: inherit; color: inherit; }
   </header>
 
   <div class="tutor-fala" id="tutor-fala">
-    <p class="tutor-vazio">Pergunte qualquer coisa sobre o que está aberto. A resposta sai do conteúdo desta página — se não estiver aqui, ele diz que não está, em vez de inventar.</p>
+    <p class="tutor-vazio">
+      <span class="tutor-modo-ia">Pergunte o que quiser. A resposta é escrita a partir da página que você tem aberta, e os trechos que a sustentam vêm logo abaixo — dá para conferir.</span>
+      <span class="tutor-modo-busca">Digite sua dúvida e eu procuro nas 157 aulas, mostrando os trechos que respondem, com link para a aula.</span>
+    </p>
+    <div class="tutor-sug">
+      <button type="button" data-sugestao>diferença entre PARA e ENQUANTO</button>
+      <button type="button" data-sugestao>por que o vetor começa no zero</button>
+      <button type="button" data-sugestao>o que é closure</button>
+      <button type="button" data-sugestao>quando usar LEFT JOIN</button>
+    </div>
   </div>
 
   <form class="tutor-form" id="tutor-form">
-    <input id="tutor-campo" type="text" placeholder="Por que isso funciona assim?" autocomplete="off">
+    <input id="tutor-campo" type="text" placeholder="Procurar no material…" autocomplete="off">
     <button class="tutor-icone tutor-parar" type="button" id="tutor-parar" hidden aria-label="Parar resposta">
       <svg viewBox="0 0 20 20" fill="currentColor"><rect x="6" y="6" width="8" height="8" rx="1.5"/></svg>
     </button>
@@ -1705,17 +1920,16 @@ function telaInicio() {
 
   return `
     <div class="folha-larga pilha pilha-24">
-      <header class="cabeca">
-        <div>
-          <p class="rot">Seu caminho</p>
-          <h1>${esc(D.titulo)}</h1>
-          <p>${MODS.filter((m) => m.dificuldade).map((m) => esc(m.curto)).join(" → ")} · 4 a 7 horas por semana</p>
-        </div>
+      <header class="cabeca entra entra-1" style="display:block">
+        <p class="rot">Seu caminho</p>
+        <h1>${esc(D.titulo)}</h1>
+        <p>${MODS.length} módulos · ${TOTAL_AULAS} aulas · 4 a 7 horas por semana</p>
+        ${trilhaTopo()}
       </header>
 
       ${
         prox
-          ? `<a class="cartao cartao-link" href="#/m/${prox.m.num}/${prox.a.id}" style="padding:18px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          ? `<a class="cartao cartao-link seguir entra entra-3" href="#/m/${prox.m.num}/${prox.a.id}" style="--cor-faixa:var(--${prox.m.faixa.cor});padding:18px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
               <div style="flex:1;min-width:200px">
                 <p class="rot">${totalLidas() === 0 ? 'Comece por aqui' : 'Continue de onde parou'}</p>
                 <h2 style="font-size:19px;margin-top:5px">${esc(prox.a.codigo)} — ${esc(prox.a.titulo)}</h2>
@@ -1731,9 +1945,9 @@ function telaInicio() {
             </div>`
       }
 
-      ${cartaoCheckin()}
+      <div class="entra entra-2">${cartaoCheckin()}</div>
 
-      <div class="ladrilhos">
+      <div class="ladrilhos entra entra-4">
         <div class="ladrilho"><div class="v num">${p}<small>%</small></div><div class="r">do caminho lido</div></div>
         <div class="ladrilho"><div class="v num">${totalLidas()}<small>/${TOTAL_AULAS}</small></div><div class="r">aulas</div></div>
         <div class="ladrilho"><div class="v num">${feitos}<small>/${MODS.length}</small></div><div class="r">módulos concluídos</div></div>
@@ -1774,6 +1988,27 @@ function telaInicio() {
         <div class="grade-mod">${MODS.slice(0, 4).map(cartaoModulo).join('')}</div>
       </section>
     </div>`;
+}
+
+/**
+ * A trilha inteira em uma faixa: cada módulo é uma barra que enche com o
+ * quanto foi lido, na cor da sua altitude. Serve de mapa e de atalho, e o
+ * módulo em que a pessoa está agora fica marcado com um ponto.
+ */
+function trilhaTopo() {
+  const prox = proximaAula();
+  return `<div class="trilha-topo">
+    ${MODS.map((m, i) => {
+      const pct = pctDo(m);
+      const aqui = prox && prox.m.num === m.num;
+      return `<a class="trilha-passo${aqui ? ' aqui' : ''}" href="#/m/${m.num}"
+                 style="--cor-faixa:var(--${m.faixa.cor})"
+                 title="Módulo ${m.num} — ${esc(m.nome)} · ${pct}% lido">
+        <span class="trilha-barra"><i style="--ate:${pct}%;--atraso:${i * 45}ms"></i></span>
+        <b>${esc(m.curto)}</b>
+      </a>`;
+    }).join('')}
+  </div>`;
 }
 
 /**
@@ -1832,7 +2067,7 @@ function cartaoCheckin() {
 function cartaoModulo(m) {
   const pct = pctDo(m);
   const est = estadoDo(m);
-  return `<a class="cartao cartao-link mod" href="#/m/${m.num}" style="--cor-faixa:var(--${m.faixa.cor})">
+  return `<a class="cartao cartao-link mod entra" href="#/m/${m.num}" style="--cor-faixa:var(--${m.faixa.cor});animation-delay:${Math.min(m.num,8)*45+120}ms">
     <div class="mod-topo">
       <div style="min-width:0">
         <span class="mod-num">MÓDULO ${m.num}</span>
@@ -2945,16 +3180,22 @@ document.addEventListener('keydown', (ev) => {
 });
 
 /* ============================================================
-   Tutor — pergunta respondida com o conteúdo da página aberta
+   Tutor — tirar dúvida sobre o material
 
-   É o RAG da Aula 12.12 aplicado ao próprio portal: em vez de pedir
-   ao modelo que LEMBRE do material, a página que você está lendo vai
-   junto na pergunta. Por isso ele consegue dizer "esta aula não cobre
-   isso" em vez de inventar.
+   Funciona em dois níveis, e o primeiro nunca falta:
 
-   Só funciona dentro do visualizador da claude.ai, que é quem concede
-   a capacidade. Em cópia solta ou no GitHub Pages, `use()` devolve
-   nulo e o botão simplesmente não aparece.
+   1. BUSCA NO MATERIAL — sempre. Varre as 157 aulas, acha os trechos
+      que respondem e mostra com link para a aula. Roda no navegador,
+      sem rede, sem chave, sem custo. É o que aparece no GitHub Pages,
+      no arquivo solto e offline.
+
+   2. RESPOSTA REDIGIDA — quando a capacidade `sample` existe, que é
+      dentro do visualizador da claude.ai. Ela escreve a resposta em
+      cima da página aberta, e os trechos do nível 1 ficam logo abaixo
+      como fonte conferível.
+
+   Os dois juntos são a Aula 12.12 aplicada ao próprio portal: primeiro
+   recuperar o material, depois redigir em cima dele — nunca de memória.
    ============================================================ */
 
 let tutor = null;
@@ -2962,6 +3203,7 @@ let tutorLimite = 60000;
 let tutorEmCurso = null;
 
 async function ligarTutor() {
+  // O botão já está visível desde o começo: a busca funciona sem nada disto.
   try {
     tutor = await window.claude?.use?.('sample');
   } catch {
@@ -2974,10 +3216,178 @@ async function ligarTutor() {
     if (lim && lim.maxPromptBytes) tutorLimite = lim.maxPromptBytes;
   } catch { /* fica no padrão conservador */ }
 
-  $('#tutor-abrir').hidden = false;
+  document.documentElement.dataset.tutorIa = '1';
+  const campo = $('#tutor-campo');
+  if (campo) campo.placeholder = 'Por que isso funciona assim?';
 }
 
-/** Texto puro a partir do HTML já renderizado — resolve entidades de brinde. */
+/* ---- 1. Busca no material ---- */
+
+/*
+ * A lista é curta de propósito.
+ *
+ * Num material de programação, "para", "se", "enquanto", "ou" e "não" são
+ * PALAVRAS-CHAVE, não palavras vazias — descartá-las faz a busca por
+ * "diferença entre PARA e ENQUANTO" perder justamente a aula de laços. Quem
+ * cuida das palavras comuns demais é o peso por raridade abaixo, que mede o
+ * quanto o termo discrimina em vez de adivinhar por lista.
+ */
+const SEM_VALOR = new Set(
+  ('a o de da do em um uma com os as no na ao aos das dos pelo pela isso isto essa esse este esta ' +
+   'meu minha seu sua eu voce você').split(' '),
+);
+
+const normalizar = (s) =>
+  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+const termosDe = (s) =>
+  normalizar(s).match(/[a-z0-9+#.]{2,}/g)?.filter((t) => !SEM_VALOR.has(t)) || [];
+
+let trechos = null;
+
+/**
+ * Fatia as aulas em blocos pesquisáveis. Feito uma vez, na primeira busca.
+ *
+ * Três decisões que a primeira versão errou:
+ *
+ * - O TÍTULO da aula não está no HTML dela — é renderizado à parte, no
+ *   cabeçalho. Sem colocá-lo aqui, procurar "SQL injection" não achava a aula
+ *   chamada exatamente "SQL Injection". Cada trecho carrega o título do pai
+ *   numa chave própria, que pontua mais alto que o corpo.
+ * - CÓDIGO também se procura. Num curso de programação, `box-sizing`,
+ *   `malloc` e `innerHTML` aparecem sobretudo dentro dos blocos de código;
+ *   ignorá-los deixava esses termos com zero ocorrência no índice.
+ * - Título de seção é curto e informativo. O mínimo de 45 caracteres do corpo
+ *   descartava justamente os rótulos mais úteis.
+ */
+function indiceTrechos() {
+  if (trechos) return trechos;
+  trechos = [];
+  const caixa = document.createElement('div');
+
+  MODS.forEach((m) => {
+    m.aulas.forEach((a) => {
+      const kt = normalizar(`${a.codigo} ${a.titulo} ${m.nome} ${m.curto} ${a.nivel}`);
+      const juntar = (texto, min, tipo) => {
+        const t = texto.replace(/\s+/g, ' ').trim();
+        if (t.length < min) return;
+        trechos.push({ texto: t, k: normalizar(t), kt, m, a, tipo });
+      };
+
+      caixa.innerHTML = a.html;
+      caixa.querySelectorAll('p, li, .destaque, td, figcaption').forEach((el) => juntar(el.textContent, 45, 'texto'));
+      caixa.querySelectorAll('h3, h4').forEach((el) => juntar(el.textContent, 10, 'titulo'));
+      caixa.querySelectorAll('.cod pre code').forEach((el) => juntar(el.textContent, 20, 'codigo'));
+    });
+  });
+
+  caixa.innerHTML = '';
+  return trechos;
+}
+
+/**
+ * Ordena os trechos por relevância.
+ *
+ * Cada termo vale conforme sua RARIDADE no material: um que aparece em quase
+ * todo trecho quase não pontua, e um que aparece em poucos manda no resultado.
+ * É por isso que "como evitar SQL injection" acha a aula de injeção — "sql"
+ * está em centenas de trechos e vale pouco, "injection" está em poucos e
+ * decide. Sem esse peso, a busca devolvia a aula errada com convicção.
+ *
+ * Cobrir vários termos distintos também vale mais que repetir um só.
+ */
+function buscarNoMaterial(pergunta, quantos = 4) {
+  const termos = [...new Set(termosDe(pergunta))];
+  if (!termos.length) return [];
+
+  const lista = indiceTrechos();
+  const N = lista.length;
+
+  /*
+   * A frequência conta corpo E título. Contar só o corpo descartava termo que
+   * existe apenas em título — era o que fazia "SQL injection" não achar a aula
+   * chamada "SQL Injection", cujo nome não aparece no texto dela.
+   */
+  const medidos = termos
+    .map((t) => {
+      let df = 0;
+      for (const c of lista) if (c.k.includes(t) || c.kt.includes(t)) df++;
+      return { t, df, w: df ? Math.log(1 + N / df) : 0 };
+    })
+    .filter((x) => x.df > 0);
+
+  if (!medidos.length) return [];
+
+  /*
+   * Termo presente em mais de um quarto do material não discrimina nada — em
+   * "diferença entre PARA e ENQUANTO", o "para" casaria com meio portal. Se
+   * sobrar nada depois do corte, fica com os mais raros que houver.
+   */
+  const util = medidos.filter((x) => x.df < N * 0.25);
+  const candidatos = util.length ? util : medidos.sort((a, b) => a.df - b.df).slice(0, 2);
+
+  /*
+   * Fica só com o que a pergunta tem de distintivo. Em "como fazer rollback",
+   * "rollback" é raro e "fazer" é banal: mantendo os dois, um trecho que só
+   * diz "fazer" competia com um que fala de rollback. O corte é relativo ao
+   * termo mais raro da própria pergunta, não a um número fixo.
+   */
+  const maiorPeso = Math.max(...candidatos.map((x) => x.w));
+  const pesos = candidatos.filter((x) => x.w >= maiorPeso * 0.62);
+
+  const achados = [];
+  for (const c of lista) {
+    let nota = 0;
+    let cobertura = 0;
+    for (const { t, w } of pesos) {
+      const n = c.k.split(t).length - 1;
+      if (n) {
+        cobertura++;
+        nota += w * (1 + Math.min(n - 1, 3) * 0.3); // repetir ajuda, com retorno decrescente
+      }
+      // Bater no título da aula é o sinal mais forte de assunto.
+      if (c.kt.includes(t)) {
+        if (!n) cobertura++;
+        nota += w * 2.2;
+      }
+    }
+    if (!cobertura) continue;
+
+    nota *= 1 + (cobertura - 1) * 0.35;                 // responder mais da pergunta
+    if (c.tipo === 'titulo') nota *= 1.3;               // rótulo de seção
+    else if (c.tipo === 'codigo') nota *= 0.75;         // código sustenta, mas explica menos
+    else if (c.texto.length < 160) nota *= 1.1;
+    achados.push({ ...c, nota });
+  }
+
+  if (!achados.length) return [];
+  achados.sort((a, b) => b.nota - a.nota);
+
+  /*
+   * Dois cortes, nesta ordem:
+   *
+   * 1. No máximo dois trechos da mesma aula, para cobrir lugares diferentes
+   *    do material em vez de repetir a mesma página.
+   * 2. Um piso de relevância relativo ao primeiro colocado. Melhor devolver
+   *    dois trechos certos do que dois certos e dois de enfeite — resultado
+   *    fraco no meio dos bons faz o leitor duvidar dos bons também.
+   */
+  const piso = achados[0].nota * 0.5;
+  const vistos = new Map();
+
+  return achados
+    .filter((c) => {
+      if (c.nota < piso) return false;
+      const n = vistos.get(c.a.id) || 0;
+      if (n >= 2) return false;
+      vistos.set(c.a.id, n + 1);
+      return true;
+    })
+    .slice(0, quantos);
+}
+
+/* ---- 2. Resposta redigida ---- */
+
 function soTexto(html) {
   const caixa = document.createElement('div');
   caixa.innerHTML = html;
@@ -2997,7 +3407,7 @@ function contextoAtual() {
   if (r[0] === 'lab' && r[2]) {
     const m = porNum.get(Number(r[1]));
     const l = m && m.labs.find((x) => x.id === r[2]);
-    if (l) return { rotulo: `Laboratório — ${l.titulo}`, texto: `Laboratório do Módulo ${m.num}: "${l.titulo}".\n\nEnunciado: ${soTexto(l.enunciado)}\n\nDica disponível: ${soTexto(l.dica)}` };
+    if (l) return { rotulo: `Laboratório — ${l.titulo}`, texto: `Laboratório do Módulo ${m.num}: "${l.titulo}".\n\nEnunciado: ${soTexto(l.enunciado)}\n\nDica: ${soTexto(l.dica)}` };
   }
 
   if (r[0] === 'm') {
@@ -3008,47 +3418,80 @@ function contextoAtual() {
     }
   }
 
-  const mapa = MODS.map(
-    (m) => `Módulo ${m.num} — ${m.nome} (${m.tempo}): ${soTexto(m.objetivo)} Aulas: ${m.aulas.map((a) => a.codigo + ' ' + a.titulo).join('; ')}`,
-  ).join('\n');
-  return { rotulo: 'Portal inteiro', texto: `Índice do portal:\n${mapa}` };
+  return { rotulo: 'Portal inteiro', texto: '' };
 }
 
-function bolhaTutor(quem, texto) {
+/* ---- interface ---- */
+
+function bolha(quem, texto) {
   const d = document.createElement('div');
   d.className = `tutor-bolha tutor-${quem}`;
   d.textContent = texto;
   $('#tutor-fala').appendChild(d);
-  $('#tutor-fala').scrollTop = $('#tutor-fala').scrollHeight;
+  rolarTutor();
   return d;
 }
 
-async function perguntarTutor(pergunta) {
-  if (!tutor || tutorEmCurso) return;
+function rolarTutor() {
+  const f = $('#tutor-fala');
+  f.scrollTop = f.scrollHeight;
+}
 
+function renderTrechos(lista, pergunta) {
+  const cx = document.createElement('div');
+  cx.className = 'tutor-fontes';
+
+  if (!lista.length) {
+    cx.innerHTML = `<p class="tutor-nada">Não achei nada sobre “${esc(pergunta)}” nas ${TOTAL_AULAS} aulas. Tente outras palavras — o material usa “laço” e não “loop”, “vetor” e não “array”, por exemplo.</p>`;
+    $('#tutor-fala').appendChild(cx);
+    rolarTutor();
+    return;
+  }
+
+  cx.innerHTML =
+    `<p class="tutor-fontes-cab">${lista.length === 1 ? 'Trecho do material' : 'Trechos do material'}</p>` +
+    lista
+      .map(
+        (t) => `<a class="tutor-fonte" href="#/m/${t.m.num}/${t.a.id}">
+          <span class="tutor-fonte-onde">${esc(t.m.curto)} · aula ${esc(t.a.codigo)}</span>
+          <span class="tutor-fonte-txt">${esc(t.texto.length > 260 ? t.texto.slice(0, 260) + '…' : t.texto)}</span>
+        </a>`,
+      )
+      .join('');
+
+  $('#tutor-fala').appendChild(cx);
+  rolarTutor();
+}
+
+async function responderComIA(pergunta, apoio) {
   const ctx = contextoAtual();
-  bolhaTutor('eu', pergunta);
-  const resposta = bolhaTutor('ele', 'Pensando…');
+  const resposta = bolha('ele', 'Pensando…');
+  resposta.classList.add('pensando');
 
-  // Reserva espaço para a instrução e a pergunta antes de cortar o material.
-  const folga = 2000 + pergunta.length;
-  const material = ctx.texto.slice(0, Math.max(1000, tutorLimite - folga));
+  // Se a página aberta não é uma aula, usa os trechos achados como material.
+  const material =
+    ctx.texto ||
+    apoio.map((t) => `[${t.m.curto}, aula ${t.a.codigo}] ${t.texto}`).join('\n\n') ||
+    'Sem material disponível.';
+
+  const folga = 2200 + pergunta.length;
+  const corte = material.slice(0, Math.max(1000, tutorLimite - folga));
 
   const entrada = [
-    'Você é o tutor do portal "Caminho da Programação", um material de estudo em português do Brasil.',
-    'Responda à pergunta do aluno usando SOMENTE o conteúdo da página abaixo.',
+    'Você é o tutor do portal "Caminho da Programação", material de estudo em português do Brasil.',
+    'Responda usando SOMENTE o conteúdo abaixo.',
     '',
     'Regras:',
-    '- Se a resposta não estiver no conteúdo, diga que esta página não cobre isso e aponte o que ela cobre. Não invente.',
-    '- Português do Brasil, direto, sem introdução nem despedida.',
-    '- Prefira os exemplos que já estão no conteúdo a inventar outros.',
-    '- No máximo 180 palavras, a menos que peçam detalhe.',
+    '- Se a resposta não estiver no conteúdo, diga isso e aponte o que o conteúdo cobre. Nunca invente.',
+    '- Português do Brasil, direto, sem saudação nem despedida.',
+    '- Prefira os exemplos que já estão no conteúdo.',
+    '- No máximo 180 palavras, salvo se pedirem detalhe.',
     '',
     `PÁGINA ABERTA: ${ctx.rotulo}`,
     'CONTEÚDO:',
-    material,
+    corte,
     '',
-    `PERGUNTA DO ALUNO: ${pergunta}`,
+    `PERGUNTA: ${pergunta}`,
   ].join('\n');
 
   const controle = new AbortController();
@@ -3060,44 +3503,62 @@ async function perguntarTutor(pergunta) {
     await tutor(entrada, {
       signal: controle.signal,
       onText: ({ text }) => {
+        resposta.classList.remove('pensando');
         resposta.textContent = text;
-        $('#tutor-fala').scrollTop = $('#tutor-fala').scrollHeight;
+        rolarTutor();
       },
     });
   } catch (e) {
+    resposta.classList.remove('pensando');
     const codigo = e && e.code;
-    if (codigo === 'cancelled') {
-      resposta.textContent = (e.text || resposta.textContent) + ' [interrompido]';
-    } else if (codigo === 'not_granted') {
-      resposta.textContent = 'O tutor não está disponível nesta visualização.';
-      $('#tutor-abrir').hidden = true;
-    } else if (codigo === 'rate_limited') {
-      resposta.textContent = 'Muitas perguntas seguidas. Espere alguns segundos e tente de novo.';
-    } else {
-      resposta.textContent = 'Não consegui responder agora. Tente reformular a pergunta.';
-    }
+    if (codigo === 'cancelled') resposta.textContent = (e.text || resposta.textContent) + ' [interrompido]';
+    else if (codigo === 'rate_limited') resposta.textContent = 'Muitas perguntas seguidas. Espere alguns segundos.';
+    else if (codigo === 'not_granted') { resposta.remove(); tutor = null; delete document.documentElement.dataset.tutorIa; }
+    else resposta.textContent = 'Não consegui redigir a resposta agora — os trechos abaixo continuam valendo.';
   } finally {
     tutorEmCurso = null;
     $('#tutor-parar').hidden = true;
     $('#tutor-enviar').disabled = false;
-    $('#tutor-campo').focus();
   }
+}
+
+async function perguntar(pergunta) {
+  if (tutorEmCurso) return;
+  $('#tutor-fala').querySelector('.tutor-vazio')?.remove();
+  bolha('eu', pergunta);
+
+  const apoio = buscarNoMaterial(pergunta);
+
+  if (tutor) {
+    await responderComIA(pergunta, apoio);
+    renderTrechos(apoio, pergunta);
+  } else {
+    renderTrechos(apoio, pergunta);
+  }
+  $('#tutor-campo').focus();
 }
 
 function abrirTutor(aberto) {
   $('#tutor').hidden = !aberto;
   $('#tutor-abrir').setAttribute('aria-expanded', String(aberto));
-  if (aberto) {
-    $('#tutor-ctx').textContent = contextoAtual().rotulo;
-    $('#tutor-campo').focus();
-  }
+  if (!aberto) return;
+  $('#tutor-ctx').textContent = tutor ? contextoAtual().rotulo : `busca nas ${TOTAL_AULAS} aulas`;
+  $('#tutor-campo').focus();
 }
 
 document.addEventListener('click', (ev) => {
   if (ev.target.closest('#tutor-abrir')) { abrirTutor($('#tutor').hidden); return; }
   if (ev.target.closest('#tutor-fechar')) { abrirTutor(false); return; }
   if (ev.target.closest('#tutor-parar')) { tutorEmCurso?.abort(); return; }
-  if (ev.target.closest('#tutor-limpar')) { $('#tutor-fala').innerHTML = ''; return; }
+  if (ev.target.closest('#tutor-limpar')) {
+    $('#tutor-fala').innerHTML = '<p class="tutor-vazio">Pergunte de novo quando quiser.</p>';
+    return;
+  }
+  if (ev.target.closest('.tutor-fonte')) setTimeout(() => abrirTutor(false), 0);
+});
+
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape' && !$('#tutor').hidden) abrirTutor(false);
 });
 
 $('#tutor-form').addEventListener('submit', (ev) => {
@@ -3106,7 +3567,12 @@ $('#tutor-form').addEventListener('submit', (ev) => {
   const q = campo.value.trim();
   if (!q) return;
   campo.value = '';
-  perguntarTutor(q);
+  perguntar(q);
+});
+
+$('#tutor-fala').addEventListener('click', (ev) => {
+  const sug = ev.target.closest('[data-sugestao]');
+  if (sug) perguntar(sug.textContent.trim());
 });
 
 /* ============================================================
