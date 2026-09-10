@@ -1,0 +1,399 @@
+[
+  {
+    "id": "of-calculadora",
+    "titulo": "Calculadora",
+    "nivel": 1,
+    "min": 180,
+    "stack": "HTML + CSS + JavaScript",
+    "modulo": 3,
+    "resumo": "O primeiro programa que reage ao usuário de verdade. Você monta a grade de botões, captura o clique e mantém o estado da conta — que é onde mora toda a dificuldade.",
+    "aprende": ["Grid para a grade de botões", "Delegação de eventos", "Estado da aplicação", "Casos de borda que quebram tudo"],
+    "arquivos": ["index.html", "estilo.css", "app.js"],
+    "etapas": [
+      { "t": "Estrutura e visor", "d": "Crie a pasta no VS Code, os três arquivos e a ligação entre eles. Um <code>&lt;div&gt;</code> de visor e a grade de botões em HTML, sem nenhum JavaScript ainda. Abra com Live Server." },
+      { "t": "Grade com CSS Grid", "d": "Quatro colunas. O botão de igual ocupa duas linhas (<code>grid-row: span 2</code>) e o zero ocupa duas colunas. Se você conseguir isso sem gambiarra, entendeu Grid." },
+      { "t": "Um clique, um número", "d": "Um único listener no container da grade, lendo <code>e.target</code>. Clicar num dígito acrescenta ao visor. Nada mais." },
+      { "t": "A conta", "d": "Guarde três coisas: o número atual, o anterior e a operação pendente. Ao clicar num operador, resolva o que estiver pendente antes de guardar o novo." },
+      { "t": "Limpar e apagar", "d": "C zera tudo, ⌫ apaga o último dígito. Teste apagar até esvaziar o visor — o que aparece?" },
+      { "t": "Teclado", "d": "<code>keydown</code> no documento mapeando teclas para as mesmas funções. Reaproveite a lógica, não copie." }
+    ],
+    "criterios": [
+      "<code>2 + 3 × 4</code> devolve o que sua calculadora promete (defina: com ou sem precedência) e sempre o mesmo",
+      "Dividir por zero não trava nem mostra <code>Infinity</code> cru",
+      "Não dá para digitar duas vírgulas no mesmo número",
+      "Apertar operador duas vezes seguidas não quebra o estado",
+      "Funciona inteiramente pelo teclado",
+      "O visor nunca fica vazio — mostra <code>0</code>"
+    ],
+    "armadilhas": [
+      "<code>0.1 + 0.2</code> dá <code>0.30000000000000004</code>. É ponto flutuante, o mesmo assunto da Aula 3.2. Arredonde na exibição, não na conta.",
+      "Números gigantes estouram o visor. Decida o que fazer antes que aconteça.",
+      "Guardar o visor como fonte da verdade dá certo até você precisar do valor anterior. Separe estado de exibição."
+    ],
+    "extras": ["Histórico das últimas contas", "Precedência de operadores de verdade", "Tema claro/escuro", "Animação no clique do botão"]
+  },
+
+  {
+    "id": "of-pomodoro",
+    "titulo": "Cronômetro Pomodoro",
+    "nivel": 1,
+    "min": 150,
+    "stack": "HTML + CSS + JavaScript",
+    "modulo": 3,
+    "resumo": "Um temporizador que alterna foco e pausa. Parece trivial e ensina a lidar com tempo — que é uma das coisas que mais engana programador iniciante.",
+    "aprende": ["setInterval e seus perigos", "Formatação de tempo", "Estados de uma máquina simples", "Notificação e áudio no navegador"],
+    "arquivos": ["index.html", "estilo.css", "app.js"],
+    "etapas": [
+      { "t": "Mostrador", "d": "Exiba <code>25:00</code> parado. Escreva a função que converte segundos em <code>MM:SS</code> com zero à esquerda e teste com 0, 59, 60 e 3599." },
+      { "t": "Contagem regressiva", "d": "Botão iniciar dispara um <code>setInterval</code> de 1 segundo. Ao chegar em zero, pare o intervalo — não deixe seguir para negativo." },
+      { "t": "Pausar e continuar", "d": "Aqui aparece o bug clássico: clicar iniciar duas vezes cria dois intervalos e o tempo passa em dobro. Guarde o id e limpe antes de criar." },
+      { "t": "Ciclos", "d": "Ao terminar o foco, entra pausa de 5 minutos automaticamente. A cada quatro focos, a pausa é longa (15 min). Conte os ciclos." },
+      { "t": "Aviso", "d": "Toque um som e mostre notificação ao virar o ciclo. Peça permissão de notificação apenas quando o usuário clicar em algo — nunca ao carregar." },
+      { "t": "Configuração", "d": "Deixe o usuário mudar as durações, e guarde no <code>localStorage</code> para não perder ao recarregar." }
+    ],
+    "criterios": [
+      "Clicar iniciar dez vezes seguidas não acelera a contagem",
+      "Pausar e continuar retoma exatamente de onde parou",
+      "Ao completar quatro focos, a pausa longa entra no lugar da curta",
+      "As configurações sobrevivem a um F5",
+      "O título da aba mostra o tempo restante"
+    ],
+    "armadilhas": [
+      "<code>setInterval</code> não é preciso: ele atrasa quando a aba fica em segundo plano. Para um cronômetro sério, guarde o horário-alvo com <code>Date.now()</code> e calcule a diferença a cada tique.",
+      "Esquecer <code>clearInterval</code> é vazamento — o intervalo continua rodando mesmo depois de você achar que parou."
+    ],
+    "extras": ["Barra ou anel de progresso", "Histórico de sessões do dia", "Modo tela cheia", "Bloquear fechar a aba durante o foco"]
+  },
+
+  {
+    "id": "of-forca",
+    "titulo": "Jogo da Forca",
+    "nivel": 1,
+    "min": 180,
+    "stack": "HTML + CSS + JavaScript",
+    "modulo": 3,
+    "resumo": "Manipulação de texto, estado de jogo e vitória/derrota. É o exercício que consolida array, string e condicional de uma vez.",
+    "aprende": ["Manipular strings e arrays", "Estado de jogo", "Renderizar a partir do estado", "SVG ou CSS para o boneco"],
+    "arquivos": ["index.html", "estilo.css", "app.js", "palavras.js"],
+    "etapas": [
+      { "t": "Palavra e lacunas", "d": "Sorteie uma palavra de uma lista e mostre um <code>_</code> para cada letra. Cuidado com acentos e espaços já desde agora." },
+      { "t": "Teclado na tela", "d": "Gere os 26 botões por JavaScript, não escreva 26 vezes no HTML. Um laço e <code>createElement</code>." },
+      { "t": "Acertar e errar", "d": "Clicar numa letra revela todas as ocorrências dela, ou consome uma tentativa. Desabilite a letra usada." },
+      { "t": "O boneco", "d": "Seis erros desenham o boneco por partes. Use SVG com as partes escondidas e vá exibindo — mais simples que desenhar no canvas." },
+      { "t": "Fim de jogo", "d": "Vitória quando não há mais lacunas; derrota no sexto erro. Nos dois casos, revele a palavra e ofereça jogar de novo." },
+      { "t": "Reiniciar sem F5", "d": "O botão de novo jogo precisa zerar tudo: palavra, letras usadas, erros e o boneco. Se sobrar estado, o bug aparece na segunda partida." }
+    ],
+    "criterios": [
+      "Palavra com letra repetida revela todas de uma vez",
+      "Clicar na mesma letra duas vezes não consome duas tentativas",
+      "Palavra com acento funciona (decida: normalizar ou aceitar acentuada)",
+      "Jogar cinco partidas seguidas sem recarregar não deixa resíduo",
+      "O jogo é jogável só com teclado"
+    ],
+    "armadilhas": [
+      "Acento é o problema real deste projeto. <code>'coração'.includes('a')</code> é falso para o 'ã'. Normalize com <code>normalize('NFD')</code> ou monte a lista sem acentos.",
+      "Reiniciar sem limpar o estado anterior é o bug mais comum aqui, e só aparece na segunda partida."
+    ],
+    "extras": ["Categorias de palavras com dica", "Placar de vitórias no localStorage", "Animação ao revelar letra", "Modo dois jogadores"]
+  },
+
+  {
+    "id": "of-memoria",
+    "titulo": "Jogo da Memória",
+    "nivel": 2,
+    "min": 180,
+    "stack": "HTML + CSS + JavaScript",
+    "modulo": 3,
+    "resumo": "Cartas viradas, pares e tempo. Ensina a lidar com o intervalo entre duas ações do usuário — o momento em que quase todo mundo cria um bug.",
+    "aprende": ["Embaralhar corretamente", "Transições CSS 3D", "Estado temporário", "Bloquear entrada durante animação"],
+    "arquivos": ["index.html", "estilo.css", "app.js"],
+    "etapas": [
+      { "t": "Tabuleiro", "d": "Grade de 4×4 gerada por JavaScript, com 8 pares. Cada carta é um elemento com frente e verso." },
+      { "t": "Embaralhar", "d": "Use Fisher-Yates. <code>sort(() =&gt; Math.random() - 0.5)</code> é o jeito errado e famoso: ele não distribui igualmente." },
+      { "t": "Virar", "d": "Clique vira a carta com <code>transform: rotateY(180deg)</code> e <code>backface-visibility: hidden</code>. Duas cartas viradas iniciam a comparação." },
+      { "t": "Par ou não", "d": "Iguais: ficam viradas e travadas. Diferentes: desviram depois de 800ms. Durante essa espera, clicar numa terceira carta não pode fazer nada." },
+      { "t": "Vitória e placar", "d": "Conte jogadas e tempo. Ao formar todos os pares, mostre o resultado e o melhor tempo guardado." },
+      { "t": "Níveis", "d": "Deixe escolher 4×4 ou 6×6. A grade e a quantidade de pares mudam sozinhas." }
+    ],
+    "criterios": [
+      "Clicar rápido em cinco cartas não vira mais de duas ao mesmo tempo",
+      "Clicar duas vezes na mesma carta não conta como par",
+      "O embaralhamento é uniforme (Fisher-Yates, não sort com random)",
+      "O contador de jogadas bate com o que o jogador fez",
+      "O melhor tempo sobrevive ao recarregar"
+    ],
+    "armadilhas": [
+      "O clique durante a animação é a armadilha central. Use uma variável <code>travado</code> e ignore cliques enquanto ela estiver ligada.",
+      "<code>sort(() =&gt; Math.random() - 0.5)</code> parece embaralhar e não embaralha direito. Vale medir: rode 10 mil vezes e conte quantas vezes cada carta cai na primeira posição."
+    ],
+    "extras": ["Tema com imagens em vez de números", "Modo contra o relógio", "Dois jogadores alternando", "Som ao formar par"]
+  },
+
+  {
+    "id": "of-pong",
+    "titulo": "Pong",
+    "nivel": 2,
+    "min": 240,
+    "stack": "HTML + Canvas + JavaScript",
+    "modulo": 3,
+    "resumo": "Seu primeiro jogo com laço de animação. Aqui entram canvas, movimento por quadro e colisão — a base de qualquer jogo que você fizer depois.",
+    "aprende": ["Canvas 2D", "requestAnimationFrame", "Colisão retângulo-círculo", "Entrada contínua de teclado"],
+    "arquivos": ["index.html", "estilo.css", "jogo.js"],
+    "etapas": [
+      { "t": "Tela e desenho", "d": "Um <code>&lt;canvas&gt;</code> de 800×500. Pegue o contexto <code>2d</code> e desenhe duas raquetes e uma bola parados. Só isso já é meia batalha." },
+      { "t": "O laço", "d": "Crie a função <code>quadro()</code> que limpa a tela, atualiza posições e desenha, chamando <code>requestAnimationFrame(quadro)</code> no fim. Faça a bola andar em linha reta." },
+      { "t": "Paredes", "d": "Ao tocar o topo ou a base, inverta <code>vy</code>. Cuidado para inverter <em>antes</em> de a bola sair da tela, ou ela treme na borda." },
+      { "t": "Raquetes", "d": "Setas movem a raquete direita. Guarde as teclas pressionadas num objeto e leia no laço — não mova dentro do <code>keydown</code>, ou o movimento fica travado." },
+      { "t": "Colisão e ângulo", "d": "Ao bater na raquete, inverta <code>vx</code>. Melhor: mude o ângulo conforme <em>onde</em> na raquete bateu — é isso que torna o Pong jogável." },
+      { "t": "Ponto e adversário", "d": "Bola saindo pelos lados dá ponto e reinicia no centro. Faça um adversário que segue a bola com velocidade limitada — se ele for perfeito, o jogo fica impossível." }
+    ],
+    "criterios": [
+      "A bola nunca escapa pela borda superior ou inferior",
+      "A bola nunca atravessa a raquete, mesmo em velocidade alta",
+      "O movimento é o mesmo em qualquer monitor (usa delta de tempo, não quadros)",
+      "O adversário é vencível",
+      "Segurar a seta move continuamente, sem travar no começo",
+      "O placar está correto após dez pontos"
+    ],
+    "armadilhas": [
+      "<strong>Tunelamento:</strong> em velocidade alta a bola pula de um lado da raquete para o outro entre dois quadros, sem nunca 'tocar'. Limite a velocidade ou teste o caminho percorrido, não só a posição.",
+      "Mover por quadro faz o jogo rodar no dobro da velocidade num monitor de 120Hz. Multiplique pelo tempo decorrido desde o último quadro.",
+      "Inverter <code>vy</code> quando a bola já saiu da borda a deixa presa invertendo para sempre. Reposicione junto com a inversão."
+    ],
+    "extras": ["Efeito sonoro em cada batida", "Modo dois jogadores", "Bola acelera a cada troca", "Rastro da bola"]
+  },
+
+  {
+    "id": "of-cobrinha",
+    "titulo": "Cobrinha (Snake)",
+    "nivel": 2,
+    "min": 240,
+    "stack": "HTML + Canvas + JavaScript",
+    "modulo": 3,
+    "resumo": "Um passo além do Pong: o jogo tem uma grade, e a cobra é uma lista que cresce. É o projeto onde estrutura de dados vira visível.",
+    "aprende": ["Pensar em grade", "Array como corpo da cobra", "Colisão consigo mesmo", "Tempo de jogo por passo"],
+    "arquivos": ["index.html", "estilo.css", "jogo.js"],
+    "etapas": [
+      { "t": "Grade", "d": "Canvas de 400×400 dividido em células de 20px — 20×20 posições. Desenhe a grade só para conferir, e apague depois." },
+      { "t": "A cobra", "d": "Um array de <code>{x, y}</code> em coordenadas de célula, não de pixel. Comece com três segmentos e desenhe cada um." },
+      { "t": "Movimento", "d": "A cada passo, insira uma cabeça nova na direção atual e remova o último segmento. Esse par insere-remove é o truque inteiro do jogo." },
+      { "t": "Comida e crescimento", "d": "Sorteie uma célula livre. Ao comer, insira a cabeça e <strong>não</strong> remova a cauda — a cobra cresce sozinha." },
+      { "t": "Morte", "d": "Bater na parede ou em si mesma encerra. Testar a colisão consigo mesma é percorrer o corpo procurando a posição da cabeça." },
+      { "t": "Velocidade e placar", "d": "Um passo a cada 120ms, acelerando conforme cresce. Guarde o recorde no <code>localStorage</code>." }
+    ],
+    "criterios": [
+      "A cobra não pode inverter 180° e comer o próprio pescoço",
+      "A comida nunca nasce em cima da cobra",
+      "Bater na parede encerra sempre, em qualquer direção",
+      "O corpo cresce exatamente um segmento por comida",
+      "Segurar duas setas ao mesmo tempo não quebra a direção",
+      "O recorde sobrevive ao recarregar"
+    ],
+    "armadilhas": [
+      "<strong>A inversão instantânea</strong> é o bug clássico: indo para a direita, apertar esquerda mata na hora. Recuse a direção oposta à atual.",
+      "Apertar duas setas entre dois passos aplica as duas. Guarde a próxima direção e só troque no momento do passo.",
+      "Sortear a comida em posição aleatória sem checar pode colocá-la dentro da cobra. Sorteie entre as células <em>livres</em>."
+    ],
+    "extras": ["Paredes que teletransportam", "Obstáculos no mapa", "Dois jogadores na mesma grade", "Comidas especiais com efeito"]
+  },
+
+  {
+    "id": "of-breakout",
+    "titulo": "Breakout",
+    "nivel": 2,
+    "min": 240,
+    "stack": "HTML + Canvas + JavaScript",
+    "modulo": 3,
+    "resumo": "A evolução natural do Pong: mesma física, agora com dezenas de objetos para colidir e destruir. Aqui você começa a organizar o código em objetos.",
+    "aprende": ["Colisão com vários alvos", "Organizar entidades em classes", "Fases e progressão", "Estado de jogo (menu, jogando, fim)"],
+    "arquivos": ["index.html", "estilo.css", "jogo.js"],
+    "etapas": [
+      { "t": "Aproveite o Pong", "d": "Comece do seu Pong: canvas, laço, bola e uma raquete embaixo. Se você fez o Pong direito, esta etapa é copiar e apagar." },
+      { "t": "Os blocos", "d": "Uma matriz de blocos gerada por laço aninhado. Cada bloco guarda posição, tamanho e se está vivo." },
+      { "t": "Destruir", "d": "Ao colidir, marque o bloco como morto e inverta a bola. Percorra só os vivos ao desenhar e ao testar colisão." },
+      { "t": "De que lado bateu", "d": "Inverter sempre <code>vy</code> é errado: bater na lateral de um bloco deveria inverter <code>vx</code>. Compare o quanto a bola penetrou em cada eixo." },
+      { "t": "Vidas e fases", "d": "Três vidas. Quando todos os blocos morrem, monte a fase seguinte com mais blocos ou bola mais rápida." },
+      { "t": "Telas de estado", "d": "Menu, jogando, pausado, fim. Uma variável de estado decide o que o laço desenha — não crie três laços." }
+    ],
+    "criterios": [
+      "A bola inverte no eixo certo conforme o lado do bloco em que bate",
+      "Nenhum bloco morto continua colidindo ou sendo desenhado",
+      "Passar de fase não deixa resíduo da anterior",
+      "Perder as três vidas leva à tela de fim, e dela dá para recomeçar",
+      "O jogo pausa e retoma sem alterar posições"
+    ],
+    "armadilhas": [
+      "Colidir com dois blocos no mesmo quadro inverte a direção duas vezes e a bola segue reto atravessando tudo. Trate uma colisão por quadro.",
+      "Percorrer todos os blocos a cada quadro funciona com 50 blocos e trava com 5 mil. É o alerta de O(n²) do Módulo 13 aparecendo na prática."
+    ],
+    "extras": ["Blocos que exigem duas batidas", "Itens que caem e dão poderes", "Editor de fases", "Placar online falso"]
+  },
+
+  {
+    "id": "of-tarefas",
+    "titulo": "Lista de tarefas com persistência",
+    "nivel": 2,
+    "min": 180,
+    "stack": "HTML + CSS + JavaScript",
+    "modulo": 3,
+    "resumo": "O projeto mais pedido em teste de vaga júnior. Simples de começar e revelador: filtro, edição e persistência expõem quem entende estado de quem só copia tutorial.",
+    "aprende": ["CRUD completo", "Renderizar a partir do estado", "Filtros", "localStorage com objetos"],
+    "arquivos": ["index.html", "estilo.css", "app.js"],
+    "etapas": [
+      { "t": "Adicionar", "d": "Campo, botão e lista. Ao enviar, acrescente ao array e redesenhe a lista inteira a partir dele. Não manipule o DOM item a item." },
+      { "t": "Concluir e remover", "d": "Delegação de eventos no container. Cada tarefa tem um id único — use <code>crypto.randomUUID()</code>, não o índice do array." },
+      { "t": "Editar", "d": "Duplo clique vira campo de edição. Enter salva, Esc cancela, sair do campo salva. Os três caminhos precisam funcionar." },
+      { "t": "Filtrar", "d": "Todas, pendentes, concluídas. O filtro é estado, não é apagar do array — trocar de filtro e voltar tem que mostrar tudo de novo." },
+      { "t": "Persistir", "d": "Salve no <code>localStorage</code> a cada mudança e carregue ao abrir. Lembre que só entra texto: <code>JSON.stringify</code> e <code>JSON.parse</code>." },
+      { "t": "Acabamento", "d": "Contador de pendentes, botão de limpar concluídas, e uma mensagem decente quando a lista está vazia." }
+    ],
+    "criterios": [
+      "Recarregar a página mantém tudo, inclusive o que estava concluído",
+      "Remover uma tarefa do meio não afeta as outras",
+      "Trocar de filtro e voltar não perde nada",
+      "Editar e apertar Esc não salva a alteração",
+      "Tarefa com texto vazio ou só espaços não é aceita",
+      "Texto com <code>&lt;script&gt;</code> aparece como texto, não executa"
+    ],
+    "armadilhas": [
+      "Usar o índice do array como id quebra assim que você remove um item do meio — os índices seguintes mudam. Gere id de verdade.",
+      "<code>innerHTML</code> com o texto digitado pelo usuário é o XSS da Aula 10.3. Use <code>textContent</code>.",
+      "Salvar no localStorage a cada tecla digitada trava em lista grande. Salve ao concluir a ação."
+    ],
+    "extras": ["Arrastar para reordenar", "Prazo e destaque de atrasadas", "Categorias com cor", "Exportar e importar JSON"]
+  },
+
+  {
+    "id": "of-clima",
+    "titulo": "Painel do tempo com API",
+    "nivel": 3,
+    "min": 210,
+    "stack": "HTML + CSS + JavaScript + fetch",
+    "modulo": 3,
+    "resumo": "O projeto que mais impressiona recrutador júnior, porque exige tratar o mundo real: rede lenta, resposta de erro, cidade que não existe.",
+    "aprende": ["fetch com async/await", "Os quatro estados de tela", "Chave de API fora do código", "Cache simples"],
+    "arquivos": ["index.html", "estilo.css", "app.js", ".env.example"],
+    "etapas": [
+      { "t": "Escolha a API", "d": "Open-Meteo não exige chave e é ótima para começar. Leia a documentação e faça a primeira chamada pelo navegador, na barra de endereço, antes de escrever código." },
+      { "t": "Buscar e mostrar", "d": "Campo de cidade, <code>fetch</code>, e exiba temperatura atual. Só o caminho feliz por enquanto." },
+      { "t": "Os quatro estados", "d": "Inicial (nunca buscou), carregando, sucesso e erro. Cada um com sua tela. Este é o coração do projeto." },
+      { "t": "Erros de verdade", "d": "Teste desligando o Wi-Fi, digitando cidade inexistente e recebendo 500. Três erros diferentes, três mensagens úteis." },
+      { "t": "Previsão", "d": "Cards dos próximos cinco dias, com mínima, máxima e ícone. Formate a data em português." },
+      { "t": "Últimas buscas", "d": "Guarde as cinco últimas cidades no localStorage e ofereça como atalho." }
+    ],
+    "criterios": [
+      "Buscar com a internet desligada mostra mensagem clara, não tela em branco",
+      "Cidade inexistente tem tratamento próprio, diferente de erro de rede",
+      "O estado de carregando aparece de verdade (teste com rede lenta no DevTools)",
+      "Buscar duas vezes seguidas rápido não mistura as respostas",
+      "Nenhuma chave de API aparece no código versionado"
+    ],
+    "armadilhas": [
+      "Duas buscas rápidas podem voltar fora de ordem, e a resposta antiga sobrescreve a nova. Cancele a anterior com <code>AbortController</code>.",
+      "<code>fetch</code> não rejeita em erro 404 ou 500 — a promessa resolve normalmente. Cheque <code>resposta.ok</code>.",
+      "Chave de API em JavaScript no navegador é pública, por definição. Use API sem chave, ou aceite que ela está exposta e limite o uso no painel do provedor."
+    ],
+    "extras": ["Geolocalização do navegador", "Gráfico de temperatura da semana", "Fundo que muda com o clima", "Funcionar offline com o último resultado"]
+  },
+
+  {
+    "id": "of-quiz",
+    "titulo": "Quiz com pontuação",
+    "nivel": 3,
+    "min": 210,
+    "stack": "HTML + CSS + JavaScript",
+    "modulo": 3,
+    "resumo": "Dados estruturados guiando a interface inteira. Ensina a separar conteúdo de código — a lição que torna qualquer projeto seguinte mais fácil de manter.",
+    "aprende": ["Dados dirigindo a tela", "Navegação entre etapas", "Pontuação e resultado", "Acessibilidade em formulário"],
+    "arquivos": ["index.html", "estilo.css", "app.js", "perguntas.js"],
+    "etapas": [
+      { "t": "Os dados primeiro", "d": "Escreva o array de perguntas antes de qualquer tela: enunciado, alternativas, índice da correta, explicação. Se os dados estiverem bem modelados, o resto sai fácil." },
+      { "t": "Uma pergunta na tela", "d": "Renderize a pergunta atual a partir do array. Trocar o índice tem que trocar a tela inteira, sem nenhum HTML escrito à mão." },
+      { "t": "Responder", "d": "Ao escolher, marque certo ou errado com cor, mostre a explicação e trave as alternativas — não dá para responder duas vezes." },
+      { "t": "Avançar e pontuar", "d": "Botão próxima, contador de acertos e barra de progresso. Na última, o botão vira 'ver resultado'." },
+      { "t": "Resultado", "d": "Nota, quais errou e a explicação de cada uma. Errar é onde o aprendizado acontece — mostre bem." },
+      { "t": "Refazer e embaralhar", "d": "Refazer zera tudo. Embaralhe perguntas e alternativas, cuidando para o índice da correta acompanhar." }
+    ],
+    "criterios": [
+      "Nenhuma pergunta está escrita no HTML — tudo vem dos dados",
+      "Não dá para responder a mesma pergunta duas vezes",
+      "Embaralhar as alternativas mantém a resposta correta correta",
+      "O resultado bate com o que foi respondido",
+      "Dá para jogar inteiro pelo teclado",
+      "Refazer não mostra resíduo da rodada anterior"
+    ],
+    "armadilhas": [
+      "Embaralhar as alternativas sem atualizar o índice da correta é o bug número um deste projeto. Guarde a resposta pelo conteúdo, ou reordene junto.",
+      "Guardar a resposta certa num atributo do HTML deixa a resposta visível no inspecionar elemento. Mantenha nos dados."
+    ],
+    "extras": ["Tempo por pergunta", "Categorias e níveis", "Carregar perguntas de um JSON externo", "Compartilhar resultado"]
+  },
+
+  {
+    "id": "of-financeiro",
+    "titulo": "Controle financeiro pessoal",
+    "nivel": 3,
+    "min": 300,
+    "stack": "HTML + CSS + JavaScript",
+    "modulo": 3,
+    "resumo": "O projeto mais completo em JavaScript puro: cadastro, categorias, filtros, totais e gráfico. É o que fecha o Módulo 3 com um portfólio de verdade.",
+    "aprende": ["Modelar dados de negócio", "Agregação com reduce", "Gráfico sem biblioteca", "Dinheiro sem erro de arredondamento"],
+    "arquivos": ["index.html", "estilo.css", "app.js", "graficos.js"],
+    "etapas": [
+      { "t": "Lançamento", "d": "Formulário com descrição, valor, tipo (entrada/saída), categoria e data. Valide antes de aceitar: valor tem que ser número positivo." },
+      { "t": "Lista e totais", "d": "Tabela dos lançamentos e três totais no topo: entradas, saídas e saldo. Calcule com <code>reduce</code> a partir dos dados, nunca some na mão ao adicionar." },
+      { "t": "Dinheiro em centavos", "d": "Guarde valores como inteiros de centavos e divida só na exibição. É a mesma razão do <code>DECIMAL</code> da Aula 9.5." },
+      { "t": "Filtros", "d": "Por mês, por tipo e por categoria, combináveis. Os totais respeitam o filtro ativo." },
+      { "t": "Gráfico", "d": "Gastos por categoria, desenhado em canvas ou com divs proporcionais. Sem biblioteca — é aqui que você entende o que uma biblioteca de gráfico faz." },
+      { "t": "Persistir e exportar", "d": "localStorage para tudo, e um botão que exporta CSV. O CSV precisa abrir certo no Excel brasileiro (ponto e vírgula, vírgula decimal)." }
+    ],
+    "criterios": [
+      "Somar 0,10 dez vezes dá exatamente 1,00",
+      "Os totais batem com a soma manual dos lançamentos filtrados",
+      "Filtros combinados funcionam nas duas ordens de aplicação",
+      "O gráfico bate com os números da tabela",
+      "O CSV exportado abre corretamente numa planilha em português",
+      "Cem lançamentos não deixam a tela lenta"
+    ],
+    "armadilhas": [
+      "<code>0.1 + 0.2 !== 0.3</code>. Em dinheiro isso vira diferença de centavo no fechamento do mês. Centavos inteiros resolvem.",
+      "Guardar o total como campo e atualizar a cada operação sempre dessincroniza. Calcule sempre a partir da lista.",
+      "Data em texto não ordena nem filtra direito. Guarde ISO (<code>AAAA-MM-DD</code>) e formate na exibição."
+    ],
+    "extras": ["Metas de gasto por categoria", "Comparar dois meses", "Lançamentos recorrentes", "Importar extrato CSV do banco"]
+  },
+
+  {
+    "id": "of-api-tarefas",
+    "titulo": "API de tarefas com banco",
+    "nivel": 4,
+    "min": 420,
+    "stack": "Python + FastAPI + SQLite",
+    "modulo": 9,
+    "resumo": "A travessia do front para o back. Aqui seu código deixa de rodar no navegador de alguém e passa a rodar num servidor — e você descobre que a metade difícil é a que ninguém vê.",
+    "aprende": ["API REST de verdade", "Banco com SQL", "Validação e status HTTP", "Testes automatizados"],
+    "arquivos": ["main.py", "banco.py", "modelos.py", "test_api.py", "requirements.txt", ".env.example"],
+    "etapas": [
+      { "t": "Ambiente", "d": "Pasta, <code>venv</code>, <code>pip install fastapi uvicorn</code>. Rode <code>uvicorn main:app --reload</code> e abra <code>/docs</code> — a documentação nasce sozinha." },
+      { "t": "CRUD em memória", "d": "Os cinco endpoints (listar, ver, criar, editar, apagar) com uma lista Python. Sem banco ainda: primeiro acerte a forma da API." },
+      { "t": "Status certos", "d": "201 ao criar, 204 ao apagar, 404 no que não existe, 422 em corpo inválido. Status errado é o defeito mais comum em API de iniciante." },
+      { "t": "Banco", "d": "Troque a lista por SQLite com tabela de verdade, chave primária e <code>NOT NULL</code>. Use consultas com parâmetro — Aula 10.2." },
+      { "t": "Validação", "d": "Modelos Pydantic recusando título vazio, data inválida e campo desconhecido. Deixe o framework validar em vez de escrever <code>if</code>." },
+      { "t": "Testes e front", "d": "Testes com <code>pytest</code> cobrindo os caminhos felizes e os erros. Depois conecte a lista de tarefas da oficina anterior nesta API." }
+    ],
+    "criterios": [
+      "<code>/docs</code> mostra todos os endpoints com os corpos certos",
+      "Buscar id inexistente devolve 404, não 500 nem lista vazia",
+      "Corpo inválido devolve 422 explicando qual campo",
+      "As consultas usam parâmetros — nenhuma string concatenada",
+      "Os testes passam com o banco vazio e com o banco cheio",
+      "O front do navegador consome a API sem erro de CORS"
+    ],
+    "armadilhas": [
+      "CORS vai te travar na hora de conectar o front. É a Aula 10.9 — configure a origem permitida, não use <code>*</code> com credenciais.",
+      "Testes que compartilham banco passam sozinhos e falham juntos. Cada teste começa do zero.",
+      "Deixar o banco versionado no Git enche o repositório de dado de teste. Coloque no <code>.gitignore</code>."
+    ],
+    "extras": ["Autenticação com token", "Paginação e ordenação", "Docker Compose com PostgreSQL", "Publicar numa PaaS"]
+  }
+]
