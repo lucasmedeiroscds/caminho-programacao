@@ -1859,6 +1859,26 @@ body {
 }
 
 @media print {
+  /*
+   * Fontes genéricas no papel, e a razão é medida, não gosto.
+   *
+   * Com as fontes da web, o Chrome não conseguia embuti-las e caía em
+   * Type3 — um formato em que cada letra vira desenho vetorial. O
+   * resultado eram 14 fontes Type3 e 199 KB por folha. Pedindo famílias
+   * genéricas, ele resolve para as do sistema, embute subconjuntos de
+   * verdade e o arquivo cai para 134 KB, com texto melhor tratado por
+   * qualquer leitor de PDF.
+   *
+   * Na tela, as fontes do portal continuam intactas — isto vale só aqui.
+   */
+  *, *::before, *::after {
+    font-family: sans-serif !important;
+  }
+  code, pre, samp, kbd,
+  .rot, .of-imp-meta, .of-imp-pe, .tarefa-n, .item-cod, .item-m, .num {
+    font-family: monospace !important;
+  }
+
   /* ---- o que não vai para o papel ---- */
   .trilho, .barra-baixo, .topo-movel, .leitura, .indice,
   .tutor, .tutor-abrir, .aviso, .carimbo-fundo,
