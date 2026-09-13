@@ -1,0 +1,5 @@
+# Saida do montar.mjs: reconstruida a cada geracao a partir de tutoriais/
+conteudo/build/
+# Perfil descartavel que o Chrome usa para imprimir
+conteudo/chrome-pdf/
+__pycache__/
