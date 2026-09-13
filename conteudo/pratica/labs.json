@@ -5,6 +5,7 @@
       "titulo": "Teste de mesa de um laço",
       "tipo": "guiado",
       "min": 20,
+      "aula": "a0-9",
       "enunciado": "<p>Este laboratório é no papel — de propósito. Você vai executar o código com a mão, como o computador faria.</p><pre class=\"lab-cod\">x = 2\ny = 9\nENQUANTO (x &lt; y) FA&Ccedil;A\n   x = x * 2\n   ESCREVA x\nFIM ENQUANTO</pre><p>Monte a tabela com uma linha por volta, registrando <code>x</code>, <code>y</code>, o resultado do teste e o que foi escrito.</p>",
       "passos": [
         "Desenhei a tabela com as colunas: passo, x, y, x &lt; y?, saída",
@@ -22,6 +23,7 @@
       "titulo": "Estrutura semântica sem uma única div",
       "tipo": "html",
       "min": 25,
+      "aula": "a1-4",
       "enunciado": "<p>Escreva a estrutura de uma página de notícia usando <strong>só tags semânticas</strong>. Os testes conferem a estrutura de verdade, lendo o HTML que você escrever.</p><p>Precisa ter: um <code>header</code> com <code>h1</code>, um <code>nav</code> com pelo menos dois links, um <code>main</code> contendo um <code>article</code>, um <code>aside</code>, um <code>footer</code>, e uma imagem com <code>alt</code> preenchido. E <strong>nenhuma</strong> <code>div</code>.</p>",
       "inicial": "<header>\n  <h1>Título da notícia</h1>\n</header>\n\n<!-- continue daqui -->\n",
       "testes": [
@@ -42,6 +44,7 @@
       "titulo": "Fazer a caixa ocupar 300px de verdade",
       "tipo": "css",
       "min": 20,
+      "aula": "a2-3",
       "enunciado": "<p>O elemento <code>.caixa</code> abaixo já existe no HTML com <code>width: 300px</code>, <code>padding: 20px</code> e <code>border: 5px</code>. Hoje ele ocupa 350px na tela.</p><p>Escreva o CSS que faz ele ocupar <strong>exatamente 300px</strong>, e além disso centralize o conteúdo dele na vertical e na horizontal. Os testes leem a largura calculada pelo navegador de verdade.</p>",
       "html": "<div class=\"caixa\">centro</div>",
       "inicial": ".caixa {\n  width: 300px;\n  padding: 20px;\n  border: 5px solid #333;\n  height: 160px;\n  /* continue daqui */\n}\n",
@@ -61,6 +64,7 @@
       "titulo": "Encadear filter, map e reduce",
       "tipo": "js",
       "min": 25,
+      "aula": "a3-5",
       "enunciado": "<p>Dada a lista <code>produtos</code>, calcule o <strong>valor total em estoque</strong>: para cada produto com estoque maior que zero, multiplique preço por estoque, e some tudo.</p><p>Guarde o resultado numa constante chamada <code>total</code>. Use encadeamento — sem <code>for</code>.</p>",
       "preludio": "const produtos = [\n  { nome: 'Camisa', preco: 50, estoque: 3 },\n  { nome: 'Calça',  preco: 120, estoque: 0 },\n  { nome: 'Boné',   preco: 30, estoque: 7 }\n];",
       "inicial": "const total = produtos\n  // continue daqui\n  ;\n",
@@ -77,6 +81,7 @@
       "titulo": "Contador com estado privado",
       "tipo": "js",
       "min": 20,
+      "aula": "a3-8",
       "enunciado": "<p>Escreva a função <code>criarContador</code>, que devolve uma função. Cada chamada da função devolvida aumenta o contador em 1 e devolve o valor novo.</p><p>O estado precisa ser <strong>privado</strong>: não pode existir variável global que dê para mexer de fora, e dois contadores criados separadamente não podem se misturar.</p>",
       "inicial": "function criarContador() {\n  // continue daqui\n}\n",
       "testes": [
@@ -88,12 +93,303 @@
       "dica": "A variável de contagem vai <em>dentro</em> de <code>criarContador</code>, antes do <code>return</code>. A função devolvida mantém acesso a ela — é a closure da Aula 3.8."
     }
   ],
+  "4": [
+    {
+      "id": "l4-tipos",
+      "titulo": "Qual é a saída? Tipos e conversão",
+      "tipo": "saida",
+      "min": 15,
+      "aula": "a4-2",
+      "enunciado": "<p>Quatro linhas de Python que parecem óbvias. Antes de rodar qualquer coisa, decida o que cada uma imprime.</p><p>Escreva a saída <strong>exata</strong>, linha por linha, como apareceria no terminal. Espaço no fim da linha não conta; no começo e no meio, conta.</p>",
+      "itens": [
+        {
+          "ling": "python",
+          "codigo": "print(0.1 + 0.2 == 0.3)",
+          "saida": "False",
+          "porque": "<code>0.1</code> e <code>0.2</code> não têm representação exata em binário. A soma dá <code>0.30000000000000004</code>. Dinheiro não se guarda em <code>float</code>: use centavos inteiros ou <code>Decimal</code>."
+        },
+        {
+          "ling": "python",
+          "codigo": "print(round(2.5), round(3.5))",
+          "saida": "2 4",
+          "porque": "O <code>round</code> do Python arredonda o empate para o <strong>par</strong> mais próximo — o arredondamento bancário. Assim os empates não puxam todas as somas para cima."
+        },
+        {
+          "ling": "python",
+          "codigo": "print(7 // -2, -7 % 3)",
+          "saida": "-4 2",
+          "porque": "A divisão inteira arredonda para <strong>baixo</strong>, não em direção ao zero: <code>-3.5</code> vira <code>-4</code>. O resto segue o sinal do divisor, por isso <code>-7 % 3</code> é <code>2</code>. Em C e Java os dois resultados seriam <code>-3</code> e <code>-1</code>."
+        },
+        {
+          "ling": "python",
+          "codigo": "print(bool(\"False\"), bool(\"\"), bool(0.0), bool([0]))",
+          "saida": "True False False True",
+          "porque": "Texto só é falso quando está vazio — a palavra <code>\"False\"</code> é um texto com cinco letras. Uma lista com um zero dentro também é verdadeira: ela não está vazia."
+        }
+      ],
+      "dica": "Nenhum dos quatro dá erro. Desconfie da resposta que parece a mais natural: cada linha foi escolhida porque engana."
+    },
+    {
+      "id": "l4-referencias",
+      "titulo": "Qual é a saída? Listas, cópias e referências",
+      "tipo": "saida",
+      "min": 20,
+      "aula": "a4-4",
+      "enunciado": "<p>Em Python, atribuir não copia: dá outro nome para o mesmo objeto. Descubra onde isso morde.</p><p>Escreva a saída <strong>exata</strong>, linha por linha, como apareceria no terminal. Espaço no fim da linha não conta; no começo e no meio, conta.</p>",
+      "itens": [
+        {
+          "ling": "python",
+          "codigo": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)",
+          "saida": "[1, 2, 3, 4]",
+          "porque": "<code>b = a</code> não criou lista nenhuma. <code>a</code> e <code>b</code> são dois nomes para o mesmo objeto, então mudar por um nome muda o que o outro enxerga."
+        },
+        {
+          "ling": "python",
+          "codigo": "a = [1, 2, 3]\nb = a[:]\nb.append(4)\nprint(a, b)",
+          "saida": "[1, 2, 3] [1, 2, 3, 4]",
+          "porque": "A fatia <code>a[:]</code> constrói uma lista nova com os mesmos elementos. Agora são dois objetos, e o <code>append</code> só atinge um."
+        },
+        {
+          "ling": "python",
+          "codigo": "grade = [[0] * 2] * 2\ngrade[0][0] = 9\nprint(grade)",
+          "saida": "[[9, 0], [9, 0]]",
+          "porque": "O <code>* 2</code> de fora repete a <strong>referência</strong> à mesma linha, não a linha. As duas posições apontam para uma única lista. O jeito certo é <code>[[0] * 2 for _ in range(2)]</code>."
+        },
+        {
+          "ling": "python",
+          "codigo": "t = (1, [2])\nt[1].append(3)\nprint(t)",
+          "saida": "(1, [2, 3])",
+          "porque": "A tupla é imutável no sentido de que não dá para trocar o que está em cada posição. Mas a lista guardada nela continua sendo uma lista, e lista muda."
+        }
+      ],
+      "dica": "Pergunte, em cada linha, quantos objetos existem de fato — não quantos nomes. <code>id(a) == id(b)</code> responde isso quando você for rodar."
+    },
+    {
+      "id": "l4-funcoes",
+      "titulo": "Qual é a saída? Funções e escopo",
+      "tipo": "saida",
+      "min": 20,
+      "aula": "a4-5",
+      "enunciado": "<p>Valor padrão, variável de fora e função criada dentro de laço: os três lugares onde funções em Python surpreendem.</p><p>Escreva a saída <strong>exata</strong>, linha por linha, como apareceria no terminal. Espaço no fim da linha não conta; no começo e no meio, conta.</p>",
+      "itens": [
+        {
+          "ling": "python",
+          "codigo": "def adicionar(x, lista=[]):\n    lista.append(x)\n    return lista\n\nprint(adicionar(1))\nprint(adicionar(2))",
+          "saida": "[1]\n[1, 2]",
+          "porque": "O valor padrão é criado <strong>uma vez</strong>, quando o <code>def</code> roda — não a cada chamada. As duas chamadas mexem na mesma lista. Use <code>lista=None</code> e crie a lista dentro da função."
+        },
+        {
+          "ling": "python",
+          "codigo": "x = 10\n\ndef dobro():\n    return x * 2\n\nx = 5\nprint(dobro())",
+          "saida": "10",
+          "porque": "A função não guarda o valor de <code>x</code> do momento em que foi definida. Ela procura <code>x</code> quando é <strong>chamada</strong>, e nessa hora ele já vale 5."
+        },
+        {
+          "ling": "python",
+          "codigo": "funcoes = [lambda: i for i in range(3)]\nprint([f() for f in funcoes])",
+          "saida": "[2, 2, 2]",
+          "porque": "As três funções leem a mesma variável <code>i</code>, e só leem quando são chamadas — depois do laço, quando <code>i</code> já é 2. Para congelar o valor: <code>lambda i=i: i</code>."
+        },
+        {
+          "ling": "python",
+          "codigo": "def mostrar(*args, **kwargs):\n    print(args, kwargs)\n\nmostrar(1, 2, cor=\"azul\")",
+          "saida": "(1, 2) {'cor': 'azul'}",
+          "porque": "<code>*args</code> junta os argumentos posicionais numa <strong>tupla</strong>; <code>**kwargs</code> junta os nomeados num <strong>dicionário</strong>."
+        }
+      ],
+      "dica": "Nos três primeiros, a pergunta é a mesma: o valor é lido na hora em que a função é <em>criada</em> ou na hora em que é <em>chamada</em>?"
+    },
+    {
+      "id": "l4-excecoes",
+      "titulo": "Qual é a saída? try, except, else e finally",
+      "tipo": "saida",
+      "min": 15,
+      "aula": "a4-9",
+      "enunciado": "<p>A ordem em que os blocos de um <code>try</code> rodam não é a ordem em que estão escritos.</p><p>Escreva a saída <strong>exata</strong>, linha por linha, como apareceria no terminal. Espaço no fim da linha não conta; no começo e no meio, conta.</p>",
+      "itens": [
+        {
+          "ling": "python",
+          "codigo": "try:\n    int(\"12a\")\nexcept ValueError:\n    print(\"valor\")\nexcept Exception:\n    print(\"geral\")",
+          "saida": "valor",
+          "porque": "Só o primeiro <code>except</code> compatível roda. Por isso o mais específico vem antes: se <code>Exception</code> estivesse em cima, capturaria tudo e o <code>ValueError</code> nunca seria alcançado."
+        },
+        {
+          "ling": "python",
+          "codigo": "def f():\n    try:\n        return \"try\"\n    finally:\n        print(\"finally\")\n\nprint(f())",
+          "saida": "finally\ntry",
+          "porque": "O <code>return</code> calcula o valor, mas antes de a função sair o <code>finally</code> roda. O <code>print</code> de dentro aparece primeiro; o de fora só recebe o valor depois."
+        },
+        {
+          "ling": "python",
+          "codigo": "try:\n    x = 1\nexcept Exception:\n    print(\"erro\")\nelse:\n    print(\"else\")\nfinally:\n    print(\"fim\")",
+          "saida": "else\nfim",
+          "porque": "O <code>else</code> roda quando o <code>try</code> termina <strong>sem</strong> exceção. O <code>finally</code> roda sempre. Código que pode falhar por outro motivo vai no <code>else</code>, para não ser engolido pelo <code>except</code>."
+        },
+        {
+          "ling": "python",
+          "codigo": "estoque = {}\ntry:\n    estoque[\"caneta\"]\nexcept KeyError as e:\n    print(repr(e))",
+          "saida": "KeyError('caneta')",
+          "porque": "Chave ausente em dicionário levanta <code>KeyError</code> com a chave dentro. Quando faltar ser normal, <code>estoque.get(\"caneta\", 0)</code> evita a exceção."
+        }
+      ],
+      "dica": "O <code>finally</code> roda até quando há <code>return</code> no meio do caminho. O <code>else</code> só roda se nada deu errado."
+    }
+  ],
+  "8": [
+    {
+      "id": "l8-tres-areas",
+      "titulo": "Qual é a saída? As três áreas no git status",
+      "tipo": "saida",
+      "min": 20,
+      "aula": "a8-2",
+      "enunciado": "<p>Cada trecho começa num repositório novo, com <code>app.txt</code> e <code>leia.txt</code> já no primeiro commit. <code>git status --short</code> mostra duas colunas: a da esquerda é a área de preparação, a da direita é a pasta de trabalho.</p><p>Escreva a saída <strong>exata</strong>, linha por linha, como apareceria no terminal. Espaço no fim da linha não conta; no começo e no meio, conta.</p>",
+      "preludio": "git init -q -b main projeto && cd projeto\ngit config user.name \"Aluna\" && git config user.email \"aluna@exemplo.com\"\necho \"v1\" > app.txt\necho \"notas\" > leia.txt\ngit add . && git commit -qm \"primeiro commit\"",
+      "itens": [
+        {
+          "ling": "bash",
+          "codigo": "echo \"v2\" >> app.txt\ngit status --short",
+          "saida": " M app.txt",
+          "porque": "O arquivo mudou na pasta, mas ninguém rodou <code>git add</code>. A coluna da esquerda fica vazia — por isso a linha <strong>começa com espaço</strong> — e a da direita marca <code>M</code>."
+        },
+        {
+          "ling": "bash",
+          "codigo": "echo \"v2\" >> app.txt\ngit add app.txt\necho \"v3\" >> app.txt\ngit status --short",
+          "saida": "MM app.txt",
+          "porque": "O <code>git add</code> guardou a versão com <code>v2</code>. Depois veio <code>v3</code>, que ainda não foi preparado. Um commit agora levaria só o <code>v2</code> — as duas colunas contam essa história."
+        },
+        {
+          "ling": "bash",
+          "codigo": "echo \"x\" > novo.txt\ngit status --short",
+          "saida": "?? novo.txt",
+          "porque": "<code>??</code> quer dizer que o Git nunca ouviu falar desse arquivo. Ele não entra em commit nenhum até um <code>git add</code>."
+        },
+        {
+          "ling": "bash",
+          "codigo": "git rm -q --cached leia.txt\ngit status --short",
+          "saida": "D  leia.txt\n?? leia.txt",
+          "porque": "<code>--cached</code> tira o arquivo do controle do Git e deixa o arquivo no disco. O próximo commit registra a remoção (<code>D</code> na esquerda), e o arquivo que sobrou na pasta passa a ser desconhecido (<code>??</code>). É assim que se para de versionar algo que devia estar no <code>.gitignore</code>."
+        }
+      ],
+      "dica": "Leia sempre as duas colunas separadamente. Esquerda: o que o próximo commit leva. Direita: o que mudou depois disso."
+    },
+    {
+      "id": "l8-branches",
+      "titulo": "Qual é a saída? Branches e commits",
+      "tipo": "saida",
+      "min": 20,
+      "aula": "a8-6",
+      "enunciado": "<p>O mesmo repositório de partida: <code>app.txt</code> e <code>leia.txt</code> no primeiro commit, na branch <code>main</code>. Cada trecho começa do zero.</p><p>Escreva a saída <strong>exata</strong>, linha por linha, como apareceria no terminal. Espaço no fim da linha não conta; no começo e no meio, conta.</p>",
+      "preludio": "git init -q -b main projeto && cd projeto\ngit config user.name \"Aluna\" && git config user.email \"aluna@exemplo.com\"\necho \"v1\" > app.txt\necho \"notas\" > leia.txt\ngit add . && git commit -qm \"primeiro commit\"",
+      "itens": [
+        {
+          "ling": "bash",
+          "codigo": "git switch -q -c recurso\necho \"f\" > recurso.txt\ngit add recurso.txt\ngit commit -qm \"recurso\"\ngit switch -q main\nls",
+          "saida": "app.txt\nleia.txt",
+          "porque": "Trocar de branch troca os arquivos da pasta. <code>recurso.txt</code> não sumiu: ele existe no commit da branch <code>recurso</code> e volta quando você voltar para ela."
+        },
+        {
+          "ling": "bash",
+          "codigo": "git branch recurso\ngit branch",
+          "saida": "* main\n  recurso",
+          "porque": "<code>git branch nome</code> <strong>cria</strong> a branch, mas não muda para ela. O asterisco continua na <code>main</code>. Para criar e já mudar: <code>git switch -c nome</code>."
+        },
+        {
+          "ling": "bash",
+          "codigo": "echo \"v2\" >> app.txt\ngit commit -qam \"segundo\"\ngit log --format=%s",
+          "saida": "segundo\nprimeiro commit",
+          "porque": "O <code>git log</code> começa pelo mais recente. <code>%s</code> mostra só a mensagem — sem o hash, que muda a cada execução."
+        },
+        {
+          "ling": "bash",
+          "codigo": "echo \"n\" > novo.txt\ngit commit -qam \"tentativa\" > /dev/null\necho $?",
+          "saida": "1",
+          "porque": "O <code>-a</code> prepara só arquivos que o Git <strong>já conhece</strong>. <code>novo.txt</code> é desconhecido, então não havia nada para registrar, e o comando saiu com código 1. Arquivo novo sempre precisa de <code>git add</code>."
+        }
+      ],
+      "dica": "No último, o que importa é o número: <code>$?</code> guarda o código de saída do comando anterior — 0 quando deu certo, diferente de 0 quando não."
+    }
+  ],
+  "9": [
+    {
+      "id": "l9-join",
+      "titulo": "Qual é a saída? JOIN e o NULL",
+      "tipo": "saida",
+      "min": 20,
+      "aula": "a9-7",
+      "enunciado": "<p>Duas tabelas pequenas. Repare no Davi, que não tem cidade, e no pedido 4, que não tem cliente.</p><p>Escreva o resultado no formato do <code>sqlite3</code> no terminal: uma linha por registro, colunas separadas por <code>|</code>, e <code>NULL</code> aparece como vazio. Uma consulta sem nenhuma linha de resultado tem resposta vazia.</p>",
+      "preludio": "CREATE TABLE clientes (id INTEGER PRIMARY KEY, nome TEXT, cidade TEXT);\nCREATE TABLE pedidos (id INTEGER PRIMARY KEY, cliente_id INTEGER, valor INTEGER);\nINSERT INTO clientes VALUES (1, 'Ana', 'Recife'), (2, 'Bruno', 'Natal'), (3, 'Carla', 'Recife'), (4, 'Davi', NULL);\nINSERT INTO pedidos VALUES (1, 1, 100), (2, 1, 50), (3, 2, 80), (4, NULL, 30);",
+      "itens": [
+        {
+          "ling": "sql",
+          "codigo": "SELECT c.nome, p.valor\nFROM clientes c\nJOIN pedidos p ON p.cliente_id = c.id\nORDER BY p.id;",
+          "saida": "Ana|100\nAna|50\nBruno|80",
+          "porque": "O <code>JOIN</code> só devolve pares que se encontram. Carla e Davi não têm pedido, e o pedido 4 não tem cliente — os três somem do resultado."
+        },
+        {
+          "ling": "sql",
+          "codigo": "SELECT c.nome, COUNT(p.id)\nFROM clientes c\nLEFT JOIN pedidos p ON p.cliente_id = c.id\nGROUP BY c.id\nORDER BY c.id;",
+          "saida": "Ana|2\nBruno|1\nCarla|0\nDavi|0",
+          "porque": "O <code>LEFT JOIN</code> mantém todo cliente, e preenche as colunas de pedido com <code>NULL</code> quando não há par. <code>COUNT(p.id)</code> não conta <code>NULL</code>, por isso Carla e Davi ficam com zero."
+        },
+        {
+          "ling": "sql",
+          "codigo": "SELECT c.nome, COUNT(*)\nFROM clientes c\nLEFT JOIN pedidos p ON p.cliente_id = c.id\nGROUP BY c.id\nORDER BY c.id;",
+          "saida": "Ana|2\nBruno|1\nCarla|1\nDavi|1",
+          "porque": "<code>COUNT(*)</code> conta <strong>linhas</strong>, e o <code>LEFT JOIN</code> gerou uma linha para Carla e outra para Davi, mesmo vazias. É o erro clássico do relatório que diz que todo cliente comprou pelo menos uma vez."
+        },
+        {
+          "ling": "sql",
+          "codigo": "SELECT COUNT(*) FROM clientes WHERE cidade <> 'Recife';",
+          "saida": "1",
+          "porque": "Só o Bruno entra. Comparar <code>NULL</code> com qualquer coisa não dá verdadeiro nem falso — dá <code>NULL</code>, e o <code>WHERE</code> descarta. Para incluir o Davi: <code>WHERE cidade &lt;&gt; 'Recife' OR cidade IS NULL</code>."
+        }
+      ],
+      "dica": "Monte a tabela do <code>JOIN</code> no papel antes de contar. Nos dois do meio, a diferença entre as consultas é uma palavra só."
+    },
+    {
+      "id": "l9-agregacao",
+      "titulo": "Qual é a saída? GROUP BY, SUM e HAVING",
+      "tipo": "saida",
+      "min": 20,
+      "aula": "a9-8",
+      "enunciado": "<p>As mesmas duas tabelas. Agora as perguntas são sobre somar e agrupar — e sobre o que acontece quando não há nada para somar.</p><p>Escreva o resultado no formato do <code>sqlite3</code> no terminal: uma linha por registro, colunas separadas por <code>|</code>, e <code>NULL</code> aparece como vazio. Uma consulta sem nenhuma linha de resultado tem resposta vazia.</p>",
+      "preludio": "CREATE TABLE clientes (id INTEGER PRIMARY KEY, nome TEXT, cidade TEXT);\nCREATE TABLE pedidos (id INTEGER PRIMARY KEY, cliente_id INTEGER, valor INTEGER);\nINSERT INTO clientes VALUES (1, 'Ana', 'Recife'), (2, 'Bruno', 'Natal'), (3, 'Carla', 'Recife'), (4, 'Davi', NULL);\nINSERT INTO pedidos VALUES (1, 1, 100), (2, 1, 50), (3, 2, 80), (4, NULL, 30);",
+      "itens": [
+        {
+          "ling": "sql",
+          "codigo": "SELECT cidade, COUNT(*)\nFROM clientes\nGROUP BY cidade\nORDER BY cidade;",
+          "saida": "|1\nNatal|1\nRecife|2",
+          "porque": "<code>NULL</code> vira um grupo próprio, e no SQLite ele vem <strong>primeiro</strong> na ordenação. Como <code>NULL</code> aparece vazio, a linha começa direto com o <code>|</code>."
+        },
+        {
+          "ling": "sql",
+          "codigo": "SELECT SUM(valor), COUNT(valor)\nFROM pedidos\nWHERE cliente_id = 3;",
+          "saida": "|0",
+          "porque": "A Carla não tem pedidos. <code>COUNT</code> de nada é 0, mas <code>SUM</code> de nada é <code>NULL</code>, não zero. Num relatório, use <code>COALESCE(SUM(valor), 0)</code>."
+        },
+        {
+          "ling": "sql",
+          "codigo": "SELECT cliente_id, SUM(valor)\nFROM pedidos\nGROUP BY cliente_id\nHAVING SUM(valor) > 60\nORDER BY cliente_id;",
+          "saida": "1|150\n2|80",
+          "porque": "O <code>HAVING</code> filtra <strong>grupos</strong>, depois de somar — o <code>WHERE</code> filtraria linhas antes. O grupo do pedido sem cliente soma 30 e fica de fora."
+        },
+        {
+          "ling": "sql",
+          "codigo": "SELECT COUNT(cidade), COUNT(DISTINCT cidade) FROM clientes;",
+          "saida": "3|2",
+          "porque": "<code>COUNT(coluna)</code> ignora os <code>NULL</code>: são 3 cidades preenchidas. Com <code>DISTINCT</code>, Recife conta uma vez só: sobram 2."
+        }
+      ],
+      "dica": "Toda função de agregação, menos <code>COUNT(*)</code>, pula os <code>NULL</code>. E agregar um conjunto vazio dá <code>NULL</code> — com exceção do <code>COUNT</code>, que dá 0."
+    }
+  ],
   "10": [
     {
       "id": "l10-escape",
       "titulo": "Escapar entrada para impedir XSS",
       "tipo": "js",
       "min": 25,
+      "aula": "a10-3",
       "enunciado": "<p>Escreva a função <code>escapar(texto)</code>, que devolve o texto com os caracteres perigosos de HTML convertidos em entidades, de forma que o resultado possa ir para um <code>innerHTML</code> sem virar código.</p><p>Precisa tratar <code>&amp;</code>, <code>&lt;</code>, <code>&gt;</code>, aspas duplas e aspas simples.</p><p><strong>Atenção à ordem:</strong> um dos cinco tem que ser trocado antes dos outros, ou você corrompe o próprio escape.</p>",
       "inicial": "function escapar(texto) {\n  // continue daqui\n}\n",
       "testes": [
@@ -107,12 +403,87 @@
       "dica": "O <code>&amp;</code> tem que ser o primeiro. Se você trocar <code>&lt;</code> por <code>&amp;lt;</code> antes, a troca seguinte do <code>&amp;</code> transformaria esse <code>&amp;</code> recém-criado em <code>&amp;amp;</code>, e o resultado sairia <code>&amp;amp;lt;</code>."
     }
   ],
+  "11": [
+    {
+      "id": "l11-terminal",
+      "titulo": "Qual é a saída? Investigando um log no terminal",
+      "tipo": "saida",
+      "min": 20,
+      "aula": "a11-3",
+      "enunciado": "<p>O arquivo <code>acesso.log</code> tem uma requisição por linha: status, método e caminho.</p><pre class=\"lab-cod\">200 GET /\n404 GET /admin\n200 GET /sobre\n500 POST /login\n404 GET /wp-login.php\n200 GET /</pre><p>Escreva a saída <strong>exata</strong>, linha por linha, como apareceria no terminal. Espaço no fim da linha não conta; no começo e no meio, conta.</p>",
+      "preludio": "printf '200 GET /\\n404 GET /admin\\n200 GET /sobre\\n500 POST /login\\n404 GET /wp-login.php\\n200 GET /\\n' > acesso.log",
+      "itens": [
+        {
+          "ling": "bash",
+          "codigo": "grep -c 404 acesso.log",
+          "saida": "2",
+          "porque": "<code>-c</code> conta as <strong>linhas</strong> que casam, em vez de imprimi-las. Numa madrugada de incidente, é a primeira pergunta: quantos?"
+        },
+        {
+          "ling": "bash",
+          "codigo": "cut -d' ' -f1 acesso.log | sort -u",
+          "saida": "200\n404\n500",
+          "porque": "<code>cut</code> pega a primeira coluna, separada por espaço. <code>sort -u</code> ordena e tira as repetições. Cada <code>|</code> entrega a saída de um comando como entrada do próximo."
+        },
+        {
+          "ling": "bash",
+          "codigo": "grep -v '^200' acesso.log | wc -l",
+          "saida": "3",
+          "porque": "<code>-v</code> inverte: fica tudo o que <strong>não</strong> começa com 200. Sobram os dois 404 e o 500. O <code>^</code> amarra o padrão ao começo da linha."
+        },
+        {
+          "ling": "bash",
+          "codigo": "cat nao-existe.log > saida.txt 2> /dev/null\necho $?\nwc -c < saida.txt",
+          "saida": "1\n0",
+          "porque": "O <code>&gt;</code> criou <code>saida.txt</code> antes de o <code>cat</code> falhar, e ele ficou vazio: a mensagem de erro sai pelo canal 2, que foi descartado. O código de saída 1 é o que um script ou uma esteira de CI consultam para saber que deu errado."
+        }
+      ],
+      "dica": "Rode de cabeça da esquerda para a direita, um comando por vez, e escreva o que cada um entrega para o próximo."
+    },
+    {
+      "id": "l11-processos",
+      "titulo": "Qual é a saída? Código de saída e variáveis de ambiente",
+      "tipo": "saida",
+      "min": 15,
+      "aula": "a11-4",
+      "enunciado": "<p>Script de deploy decide o que fazer pelo código de saída de cada comando, e recebe configuração por variável de ambiente. Os dois têm pegadinhas.</p><p>Escreva a saída <strong>exata</strong>, linha por linha, como apareceria no terminal. Espaço no fim da linha não conta; no começo e no meio, conta.</p>",
+      "preludio": "",
+      "itens": [
+        {
+          "ling": "bash",
+          "codigo": "true && echo A || echo B",
+          "saida": "A",
+          "porque": "<code>&amp;&amp;</code> roda o próximo só se o anterior saiu com 0. <code>true</code> sai com 0, o <code>echo A</code> roda e também sai com 0, então o <code>||</code> não tem o que fazer."
+        },
+        {
+          "ling": "bash",
+          "codigo": "false && echo A || echo B",
+          "saida": "B",
+          "porque": "<code>false</code> sai com 1, então o <code>echo A</code> é pulado. O <code>||</code> roda o próximo quando o anterior falhou."
+        },
+        {
+          "ling": "bash",
+          "codigo": "(exit 3)\necho $?",
+          "saida": "3",
+          "porque": "Os parênteses rodam o comando num processo filho, que termina com código 3. O terminal continua aberto, e <code>$?</code> guarda esse código."
+        },
+        {
+          "ling": "bash",
+          "codigo": "AMBIENTE=producao\nbash -c 'echo \"[$AMBIENTE]\"'\nexport AMBIENTE\nbash -c 'echo \"[$AMBIENTE]\"'",
+          "saida": "[]\n[producao]",
+          "porque": "Uma variável comum vale só no terminal atual. Os programas que ele inicia só a recebem depois do <code>export</code>. É por isso que a configuração de um servidor chega a ele como variável de ambiente <strong>exportada</strong>."
+        }
+      ],
+      "dica": "Código 0 é sucesso, qualquer outro é falha. E um processo filho só enxerga as variáveis que foram exportadas."
+    }
+  ],
   "12": [
     {
       "id": "l12-cosseno",
       "titulo": "Similaridade do cosseno na mão",
       "tipo": "js",
       "min": 25,
+      "aula": "a12-11",
       "enunciado": "<p>Implemente <code>cosseno(a, b)</code>, que recebe dois vetores (arrays de números) e devolve a similaridade do cosseno entre eles: o produto escalar dividido pelo produto das magnitudes.</p><p>É a conta que decide qual documento vence numa busca semântica — a mesma da Aula 12.11, agora escrita por você.</p>",
       "inicial": "function cosseno(a, b) {\n  // continue daqui\n}\n",
       "testes": [
@@ -131,6 +502,7 @@
       "titulo": "Busca binária, e a diferença que ela faz",
       "tipo": "js",
       "min": 30,
+      "aula": "a13-3",
       "enunciado": "<p>Implemente <code>buscaBinaria(v, alvo)</code> num array <strong>já ordenado</strong>, devolvendo o índice do alvo ou <code>-1</code> se não existir.</p><p>O último teste conta quantas vezes você <em>lê</em> o array num vetor de 100 mil posições, e exige menos de 100. Uma busca binária faz cerca de 33; uma varredura linear faria 100 mil. O teste não mede elegância — mede a ordem de grandeza.</p>",
       "inicial": "function buscaBinaria(v, alvo) {\n  // continue daqui\n}\n",
       "testes": [
