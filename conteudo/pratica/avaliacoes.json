@@ -180,5 +180,18 @@
       "Escrevi teste que prova que as duas versões dão o mesmo resultado",
       "O código está versionado, com commit separado para cada versão"
     ]
+  },
+  "14": {
+    "titulo": "Atender um chamado de suporte só pelo terminal",
+    "min": 90,
+    "enunciado": "Simule um chamado: <em>\"o computador está lento, a internet cai de vez em quando e não sei se o backup funciona\"</em>. Sem abrir nenhuma tela de Configurações, investigue <strong>pelo CMD</strong> e escreva um laudo curto: para cada item, o comando usado e o que ele mostrou.",
+    "criterios": [
+      "Registrei o espaço livre e a saúde do disco sem usar WMIC",
+      "Diagnostiquei a rede descendo as camadas: endereço, roteador, internet e DNS",
+      "Encontrei os processos que mais usam memória com <code>tasklist /FI</code>",
+      "Listei atualizações pendentes com <code>winget upgrade</code> e dispositivos com problema com <code>pnputil</code>",
+      "Testei o backup com <code>robocopy /L</code> antes de qualquer <code>/MIR</code>",
+      "Usei janela de administrador só nos comandos que exigiam, e sei dizer quais foram"
+    ]
   }
 }
