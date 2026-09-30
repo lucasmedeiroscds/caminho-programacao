@@ -1,18 +1,20 @@
 /*
- * Gera um PDF por oficina, imprimindo a própria página do portal.
+ * Gera um PDF por oficina, imprimindo as paginas montadas por ferramentas/montar.mjs.
  *
- * Usa a folha de impressão do portal, então o arquivo nunca diverge do que
- * está na tela: mudou o conteúdo, roda de novo e os 20 saem atualizados.
+ * A fonte de tudo e conteudo/tutoriais/<id>.md. Mudou o texto, roda de novo e
+ * o PDF sai atualizado — o arquivo publicado nunca diverge da fonte.
  *
- * Uso: node gerar-pdfs.mjs
+ * Uso: node gerar-pdfs.mjs [id ...]     (sem argumento, gera todos)
  */
 import { execFileSync } from 'node:child_process';
-import { readFileSync, mkdirSync, existsSync, statSync } from 'node:fs';
+import { readdirSync, mkdirSync, existsSync, statSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, basename } from 'node:path';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
-const SAIDA = join(AQUI, 'pdf');
+const RAIZ = dirname(AQUI);
+const BUILD = join(AQUI, 'build');
+const SAIDA = join(RAIZ, 'pdf');
 
 const CHROME = [
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -24,17 +26,27 @@ if (!CHROME) {
   process.exit(1);
 }
 
-const oficinas = JSON.parse(readFileSync(join(AQUI, 'oficinas.json'), 'utf8'));
-mkdirSync(SAIDA, { recursive: true });
+// Monta o HTML antes de imprimir, para nunca imprimir uma versao velha.
+const pedidos = process.argv.slice(2);
+execFileSync(process.execPath, [join(AQUI, 'ferramentas', 'montar.mjs'), ...pedidos], {
+  stdio: 'inherit',
+});
 
-const portal = join(AQUI, 'portal.html').replace(/\\/g, '/');
+const alvos = readdirSync(BUILD)
+  .filter((f) => f.endsWith('.html'))
+  .map((f) => basename(f, '.html'))
+  .filter((id) => pedidos.length === 0 || pedidos.includes(id));
+
+mkdirSync(SAIDA, { recursive: true });
 const perfil = join(AQUI, 'chrome-pdf');
 
 let ok = 0;
 const falhas = [];
 
-for (const o of oficinas) {
-  const destino = join(SAIDA, `${o.id}.pdf`);
+console.log('');
+for (const id of alvos) {
+  const destino = join(SAIDA, `${id}.pdf`);
+  const pagina = join(BUILD, `${id}.html`).replace(/\\/g, '/');
   try {
     execFileSync(
       CHROME,
@@ -46,21 +58,23 @@ for (const o of oficinas) {
         `--user-data-dir=${perfil}`,
         '--virtual-time-budget=9000',
         `--print-to-pdf=${destino}`,
-        `file:///${portal}#/oficina/${o.id}`,
+        `file:///${pagina}`,
       ],
       { stdio: 'pipe', timeout: 90000 },
     );
 
     const kb = Math.round(statSync(destino).size / 1024);
-    // Um PDF de menos de 15 KB é quase certamente uma página em branco.
+    // Um PDF de menos de 15 KB e quase certamente uma pagina em branco.
     if (kb < 15) throw new Error(`saiu com ${kb} KB — provavelmente vazio`);
-    console.log(`  ok   ${o.id.padEnd(18)} ${String(kb).padStart(4)} KB`);
+    console.log(`  ok   ${id.padEnd(18)} ${String(kb).padStart(4)} KB`);
     ok++;
   } catch (e) {
-    console.error(` FALHA ${o.id}: ${e.message.split('\n')[0]}`);
-    falhas.push(o.id);
+    console.error(` FALHA ${id}: ${e.message.split('\n')[0]}`);
+    falhas.push(id);
   }
 }
 
-console.log(`\n${ok}/${oficinas.length} PDFs gerados em pdf/`);
+rmSync(perfil, { recursive: true, force: true });
+
+console.log(`\n${ok}/${alvos.length} PDFs gerados em pdf/`);
 if (falhas.length) process.exit(1);
